@@ -574,12 +574,79 @@
     }
 
     function displayNewAnalysis(data) {
-      const analysisResults = document.getElementById('analysisResults');
-      if (analysisResults) {
-        analysisResults.innerHTML = formatAnalysis(data, data._id);
-        analysisResults.scrollIntoView({ behavior: 'smooth' });
-      }
+  console.log('Received data in displayNewAnalysis:', data); // Log the input data
+  try {
+    // Check if data and data.analysis exist
+    if (!data) {
+      throw new Error('Invalid or missing analysis data in server response');
     }
+
+    // Parse the analysis data
+    let analysis;
+    try {
+      // First try parsing directly
+      analysis = JSON.parse(data);
+    } catch (e) {
+      console.error('Direct JSON parse failed:', e);
+      // Try cleaning markdown and parsing again
+      const cleanJson = data.replace(/```json|```/g, '').trim();
+      analysis = JSON.parse(cleanJson);
+    }
+
+    // Get the analysisResults section
+    const analysisResults = document.getElementById('analysisResults');
+    if (!analysisResults) {
+      throw new Error('Analysis results section not found in DOM');
+    }
+
+    // Populate Patient Information
+    document.getElementById('patientName').textContent = analysis.patient_name || 'Not specified';
+    document.getElementById('prescriptionDate').textContent = analysis.date || 'Not specified';
+    document.getElementById('prescriber').textContent = analysis.prescriber || 'Not specified';
+
+    // Populate Medicines Table
+    const medicinesTableBody = document.getElementById('medicinesTableBody');
+    medicinesTableBody.innerHTML = ''; // Clear existing rows
+    if (analysis.medicines && Array.isArray(analysis.medicines)) {
+      analysis.medicines.forEach(med => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${med.name || 'Unknown'}</td>
+          <td>${med.dosage || 'Not specified'}</td>
+          <td>${med.purpose || 'Unknown'}</td>
+          <td>${med.instructions || 'Not specified'}</td>
+          <td>${med.warnings || 'None'}</td>
+          <td>
+            <span class="status-badge ${
+              med.dosage_appropriate && med.dosage_appropriate.toLowerCase() === 'suspicious' 
+              ? 'status-suspicious' 
+              : 'status-appropriate'
+            }">
+              ${med.dosage_appropriate || 'Not checked'}
+            </span>
+          </td>
+        `;
+        medicinesTableBody.appendChild(row);
+      });
+    } else {
+      medicinesTableBody.innerHTML = '<tr><td colspan="6">No medicines found.</td></tr>';
+    }
+
+    // Populate Additional Information
+    document.getElementById('manufacturer').textContent = analysis.manufacturer || 'Not specified';
+    document.getElementById('lotNumber').textContent = analysis.lot_number || 'Not specified';
+    document.getElementById('expirationDate').textContent = analysis.expiration_date || 'Not specified';
+
+    // Show the analysis results section
+    analysisResults.style.display = 'block';
+
+    // Scroll to the results
+    analysisResults.scrollIntoView({ behavior: 'smooth' });
+  } catch (error) {
+    console.error('Error displaying analysis:', error);
+    showAlert(`Error displaying prescription analysis: ${error.message}. Please try again.`, 'danger');
+  }
+}
 
     // Update downloadPDF function to use the correct route
     async function downloadPDF(event, prescriptionId) {
