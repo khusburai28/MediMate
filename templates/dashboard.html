@@ -374,26 +374,37 @@
       fetch(`/prescription/${id}`)
         .then(response => response.json())
         .then(data => {
-          analysisContent.innerHTML = formatAnalysis(data);
+          analysisContent.innerHTML = formatAnalysis(data, id);
         })
         .catch(error => {
           analysisContent.innerHTML = 'Error loading analysis.';
         });
     }
 
-    function formatAnalysis(data) {
+    function formatAnalysis(data, prescriptionId) {
       try {
         // First try to parse the analysis string into an object
         let analysis;
         try {
           analysis = JSON.parse(data.analysis);
         } catch (e) {
-          // If direct parsing fails, try to clean the string first
           const cleanJson = data.analysis.replace(/```json\n|\n```/g, '');
           analysis = JSON.parse(cleanJson);
         }
 
         let html = '<div class="analysis-content">';
+        
+        // Add action buttons at the top with prescriptionId
+        html += `
+          <div class="analysis-actions">
+            <button onclick="downloadPDF(event, '${prescriptionId}')" class="btn btn-primary btn-sm">
+              <i class="fas fa-download"></i> Download PDF
+            </button>
+            <button onclick="deletePrescription(event, '${prescriptionId}')" class="btn btn-danger btn-sm">
+              <i class="fas fa-trash"></i> Delete Analysis
+            </button>
+          </div>
+        `;
         
         // Add patient information
         html += '<div class="patient-info">';
@@ -417,6 +428,23 @@
                   <li><strong>Purpose:</strong> ${med.purpose || 'Unknown'}</li>
                   <li><strong>Instructions:</strong> ${med.instructions || 'Not specified'}</li>
                   ${med.warnings ? `<li><strong>Warnings:</strong> ${med.warnings}</li>` : ''}
+                  ${med.generic_alternatives ? `
+                    <li>
+                      <strong>Generic Alternatives:</strong>
+                      <ul class="generic-list">
+                        ${med.generic_alternatives.map(alt => `
+                          <li>
+                            ${alt.name} (${alt.cost_saving}% cheaper)
+                            <a href="https://pharmeasy.in/search/all?name=${encodeURIComponent(alt.name)}" 
+                               target="_blank" 
+                               class="btn btn-outline-primary btn-sm">
+                              <i class="fas fa-shopping-cart"></i> Buy Generic
+                            </a>
+                          </li>
+                        `).join('')}
+                      </ul>
+                    </li>
+                  ` : ''}
                   ${med.dosage_appropriate ? 
                     `<li><strong>Dosage Status:</strong> <span class="status-badge ${
                       med.dosage_appropriate.toLowerCase() === 'suspicious' ? 'status-suspicious' : 'status-appropriate'
@@ -432,6 +460,40 @@
             `;
           });
           html += '</div>';
+        }
+
+        // Add dietary recommendations
+        if (analysis.dietary_recommendations) {
+          html += '<div class="dietary-recommendations">';
+          html += '<h3>Dietary Recommendations</h3>';
+          html += '<div class="diet-grid">';
+          
+          // Foods to Eat
+          html += `
+            <div class="diet-section foods-to-eat">
+              <h4><i class="fas fa-check-circle"></i> Foods to Eat</h4>
+              <ul>
+                ${analysis.dietary_recommendations.foods_to_eat.map(food => 
+                  `<li><i class="fas fa-utensils"></i> ${food}</li>`
+                ).join('')}
+              </ul>
+            </div>
+          `;
+
+          // Foods to Avoid
+          html += `
+            <div class="diet-section foods-to-avoid">
+              <h4><i class="fas fa-times-circle"></i> Foods to Avoid</h4>
+              <ul>
+                ${analysis.dietary_recommendations.foods_to_avoid.map(food => 
+                  `<li><i class="fas fa-ban"></i> ${food}</li>`
+                ).join('')}
+              </ul>
+            </div>
+          `;
+
+          html += '</div>'; // Close diet-grid
+          html += '</div>'; // Close dietary-recommendations
         }
 
         // Add additional information
@@ -502,7 +564,7 @@
       .then(response => response.json())
       .then(data => {
         loadingSpinner.remove();
-        displayAnalysisResults(data.analysis);
+        displayNewAnalysis(data.analysis);
       })
       .catch(error => {
         loadingSpinner.remove();
@@ -511,47 +573,127 @@
       });
     }
 
-    function displayAnalysisResults(analysisJson) {
-      // Parse the JSON string (remove the markdown code block markers if present)
-      const cleanJson = analysisJson.replace(/```json\n|\n```/g, '');
-      const analysis = JSON.parse(cleanJson);
+    function displayNewAnalysis(data) {
+      const analysisResults = document.getElementById('analysisResults');
+      if (analysisResults) {
+        analysisResults.innerHTML = formatAnalysis(data, data._id);
+        analysisResults.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // Add downloadPDF function
+    async function downloadPDF(event, prescriptionId) {
+      event.preventDefault();
+      if (!prescriptionId) {
+        showAlert('Invalid prescription ID', 'danger');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/download-prescription?id=${prescriptionId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Create a blob from the PDF stream
+        const blob = await response.blob();
+        // Create a link to download the blob
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `prescription-${prescriptionId}.pdf`;
+
+        // Append to the document, click it, and remove it
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        // Clean up the URL object
+        window.URL.revokeObjectURL(downloadUrl);
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error downloading PDF. Please try again.', 'danger');
+      }
+    }
+
+    // Update delete function to handle event
+    async function deletePrescription(event, prescriptionId) {
+      event.preventDefault();
+      if (!prescriptionId) {
+        showAlert('Invalid prescription ID', 'danger');
+        return;
+      }
+
+      if (!confirm('Are you sure you want to delete this prescription analysis? This action cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/delete-prescription?id=${prescriptionId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Remove the prescription card from the UI
+        const card = document.querySelector(`[data-prescription-id="${prescriptionId}"]`);
+        if (card) {
+          card.remove();
+          // Show success message
+          showAlert('Prescription deleted successfully', 'success');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        showAlert('Error deleting prescription. Please try again.', 'danger');
+      }
+    }
+
+    // Add alert function for feedback
+    function showAlert(message, type) {
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+      alertDiv.role = 'alert';
+      alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      `;
       
-      // Show the results section
-      document.getElementById('analysisResults').style.display = 'block';
+      // Insert at the top of the content area
+      const contentArea = document.querySelector('.container');
+      contentArea.insertBefore(alertDiv, contentArea.firstChild);
       
-      // Update patient info
-      document.getElementById('patientName').textContent = analysis.patient_name || 'Not specified';
-      document.getElementById('prescriptionDate').textContent = analysis.date || 'Not specified';
-      document.getElementById('prescriber').textContent = analysis.prescriber || 'Not specified';
+      // Auto dismiss after 5 seconds
+      setTimeout(() => {
+        alertDiv.remove();
+      }, 5000);
+    }
+
+    // Update displayPrescription function
+    function displayPrescription(data) {
+      const prescriptionsList = document.getElementById('prescriptionsList');
+      const card = document.createElement('div');
+      card.className = 'card mb-4 prescription-card';
+      card.setAttribute('data-prescription-id', data._id);
       
-      // Update medicines table
-      const tableBody = document.getElementById('medicinesTableBody');
-      tableBody.innerHTML = ''; // Clear existing rows
+      let uploadDate;
+      try {
+        uploadDate = new Date(data.uploadDate).toLocaleDateString();
+      } catch (e) {
+        uploadDate = 'Unknown date';
+      }
       
-      analysis.medicines.forEach(medicine => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${medicine.name || 'Unknown'}</td>
-          <td>${medicine.dosage || 'Not specified'}</td>
-          <td>${medicine.purpose || 'Unknown'}</td>
-          <td>${medicine.instructions || 'Not specified'}</td>
-          <td>${medicine.warnings || 'None'}</td>
-          <td>
-            <span class="status-badge ${medicine.dosage_appropriate?.toLowerCase() === 'suspicious' ? 'status-suspicious' : 'status-appropriate'}">
-              ${medicine.dosage_appropriate || 'Unknown'}
-            </span>
-          </td>
-        `;
-        tableBody.appendChild(row);
-      });
+      card.innerHTML = `
+        <div class="card-header d-flex justify-content-between align-items-center mb-10">
+          <span>Analysis from ${uploadDate}</span>
+        </div>
+        <div class="card-body">
+          ${formatAnalysis(data, data._id)}
+        </div>
+      `;
       
-      // Update additional info
-      document.getElementById('manufacturer').textContent = analysis.manufacturer || 'Not specified';
-      document.getElementById('lotNumber').textContent = analysis.lot_number || 'Not specified';
-      document.getElementById('expirationDate').textContent = analysis.expiration_date || 'Not specified';
-      
-      // Scroll to results
-      document.getElementById('analysisResults').scrollIntoView({ behavior: 'smooth' });
+      prescriptionsList.appendChild(card);
     }
   </script>
 
@@ -756,6 +898,133 @@
 
     .buy-medicine .btn i {
       font-size: 0.9em;
+    }
+
+    .generic-list {
+      margin-top: 8px;
+      margin-left: 20px;
+    }
+
+    .generic-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 5px 0;
+      padding: 5px;
+      background: #f8f9fa;
+      border-radius: 4px;
+    }
+
+    .btn-outline-primary {
+      color: #10847e;
+      border-color: #10847e;
+      background-color: transparent;
+      margin-left: 10px;
+    }
+
+    .btn-outline-primary:hover {
+      color: white;
+      background-color: #10847e;
+    }
+
+    .dietary-recommendations {
+      background: #fff;
+      border: 1px solid #e3e6f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .diet-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .diet-section {
+      background: #f8f9fc;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .diet-section h4 {
+      color: #4e73df;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .foods-to-eat h4 {
+      color: #1cc88a;
+    }
+
+    .foods-to-avoid h4 {
+      color: #e74a3b;
+    }
+
+    .diet-section ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .diet-section li {
+      margin: 8px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .foods-to-eat li i {
+      color: #1cc88a;
+    }
+
+    .foods-to-avoid li i {
+      color: #e74a3b;
+    }
+
+    .analysis-actions {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .btn-danger {
+      background-color: #dc3545;
+      border-color: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+    }
+
+    .alert {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+      min-width: 300px;
+      box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .alert-success {
+      color: #155724;
+      background-color: #d4edda;
+      border-color: #c3e6cb;
+    }
+
+    .alert-danger {
+      color: #721c24;
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
     }
   </style>
 </body>

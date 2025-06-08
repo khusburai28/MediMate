@@ -190,12 +190,45 @@ func analyzePrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	prompt := `Analyze this prescription image and provide the following information in JSON format:
-	1. List of medicines with their dosages
-	2. Purpose/disease for each medicine
-	3. Usage instructions
-	4. Any warnings or contraindications
-	5. Validate if the dosage seems appropriate (flag if suspicious)
-	Format the response as a proper JSON object.`
+	1. List of medicines with their:
+	   - Name and dosage
+	   - Purpose/disease
+	   - Usage instructions
+	   - Warnings or contraindications
+	   - Dosage appropriateness (flag if suspicious)
+	   - Generic alternatives (include name and approximate cost savings percentage)
+	2. Dietary recommendations:
+	   - List of foods to eat that can help with the condition
+	   - List of foods to avoid that might interfere with the medication or condition
+	3. Patient information (if available)
+	4. Prescriber information
+	5. Additional details like manufacturer, lot number, etc.
+
+	Format the response as a proper JSON object with the following structure:
+	{
+		"patient_name": "...",
+		"date": "...",
+		"prescriber": "...",
+		"medicines": [{
+			"name": "...",
+			"dosage": "...",
+			"purpose": "...",
+			"instructions": "...",
+			"warnings": "...",
+			"dosage_appropriate": "...",
+			"generic_alternatives": [{
+				"name": "...",
+				"cost_saving": number
+			}]
+		}],
+		"dietary_recommendations": {
+			"foods_to_eat": ["..."],
+			"foods_to_avoid": ["..."]
+		},
+		"manufacturer": "...",
+		"lot_number": "...",
+		"expiration_date": "..."
+	}`
 
 	analysis, err := askGemini(prompt, file)
 	if err != nil {
@@ -585,8 +618,57 @@ func downloadPrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 					pdf.Ln(8)
 				}
 
+				// Add generic alternatives if available
+				if generics, ok := medicine["generic_alternatives"].([]interface{}); ok && len(generics) > 0 {
+					pdf.Cell(40, 8, "Generic Alternatives:")
+					pdf.Ln(6)
+					for _, gen := range generics {
+						if generic, ok := gen.(map[string]interface{}); ok {
+							pdf.Cell(20, 8, "•")
+							pdf.Cell(130, 8, fmt.Sprintf("%v (%v%% cheaper)", generic["name"], generic["cost_saving"]))
+							pdf.Ln(6)
+						}
+					}
+					pdf.Ln(2)
+				}
+
 				pdf.Ln(4) // Space between medicines
 			}
+		}
+	}
+
+	// Add dietary recommendations if available
+	if dietary, ok := analysis["dietary_recommendations"].(map[string]interface{}); ok {
+		pdf.SetFont("Arial", "B", 12)
+		pdf.Cell(190, 10, "Dietary Recommendations")
+		pdf.Ln(10)
+
+		// Foods to Eat
+		if foods, ok := dietary["foods_to_eat"].([]interface{}); ok && len(foods) > 0 {
+			pdf.SetFont("Arial", "B", 11)
+			pdf.Cell(190, 8, "Foods to Eat:")
+			pdf.Ln(8)
+			pdf.SetFont("Arial", "", 11)
+			for _, food := range foods {
+				pdf.Cell(10, 8, "•")
+				pdf.Cell(180, 8, fmt.Sprintf("%v", food))
+				pdf.Ln(6)
+			}
+			pdf.Ln(4)
+		}
+
+		// Foods to Avoid
+		if foods, ok := dietary["foods_to_avoid"].([]interface{}); ok && len(foods) > 0 {
+			pdf.SetFont("Arial", "B", 11)
+			pdf.Cell(190, 8, "Foods to Avoid:")
+			pdf.Ln(8)
+			pdf.SetFont("Arial", "", 11)
+			for _, food := range foods {
+				pdf.Cell(10, 8, "•")
+				pdf.Cell(180, 8, fmt.Sprintf("%v", food))
+				pdf.Ln(6)
+			}
+			pdf.Ln(4)
 		}
 	}
 
@@ -628,6 +710,57 @@ func downloadPrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func deletePrescriptionHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Get logged in user
+	username, _, _ := getLoggedInUser(r)
+	if username == "" {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Get prescription ID from URL
+	prescriptionID := r.URL.Query().Get("id")
+	if prescriptionID == "" {
+		http.Error(w, "Prescription ID is required", http.StatusBadRequest)
+		return
+	}
+
+	// Convert string ID to ObjectID
+	objID, err := primitive.ObjectIDFromHex(prescriptionID)
+	if err != nil {
+		http.Error(w, "Invalid prescription ID", http.StatusBadRequest)
+		return
+	}
+
+	// Delete prescription
+	filter := bson.M{
+		"_id":       objID,
+		"patientID": username, // Ensure user can only delete their own prescriptions
+	}
+	
+	result, err := prescriptionsColl.DeleteOne(context.Background(), filter)
+	if err != nil {
+		log.Printf("Error deleting prescription: %v", err)
+		http.Error(w, "Error deleting prescription", http.StatusInternalServerError)
+		return
+	}
+
+	if result.DeletedCount == 0 {
+		http.Error(w, "Prescription not found or unauthorized", http.StatusNotFound)
+		return
+	}
+
+	// Return success response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(map[string]string{"message": "Prescription deleted successfully"})
+}
+
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -667,6 +800,7 @@ func main() {
 			getPrescriptionHandler(w, r)
 		}
 	})
+	http.HandleFunc("/delete-prescription", deletePrescriptionHandler)
 
 	// Serve static files
 	fs := http.FileServer(http.Dir("static"))
