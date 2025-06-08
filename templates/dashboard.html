@@ -1,0 +1,599 @@
+{{define "dashboard.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediMate - Dashboard</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+  <link rel="stylesheet" href="/static/css/chat.css">
+  <script src="/static/js/chat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">
+        <h1><i class="fas fa-heartbeat pulse"></i> MediMate</h1>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <i class="fas fa-times" id="closeMenu"></i>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/dashboard" class="active">Dashboard</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="auth-buttons">
+        {{if .User}}
+          <span class="user-info">Logged in as: {{.User}}</span>
+          <a href="/logout" class="btn btn-secondary">Logout</a>
+        {{else}}
+          <a href="/login" class="btn btn-primary">Login</a>
+          <a href="/register" class="btn btn-primary">Sign Up</a>
+        {{end}}
+      </div>
+      <i class="fas fa-bars" id="menuIcon"></i>
+    </div>
+  </nav>
+
+  <section class="dashboard-section py-5" style="padding-top: 120px;">
+    <div class="container">
+      <h2 class="mb-4">Welcome to Your Prescription Dashboard</h2>
+
+      <!-- Upload Prescription Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h3 class="m-0 font-weight-bold">Upload Prescription</h3>
+        </div>
+        <div class="card-body">
+          <form id="prescriptionForm" action="/analyze-prescription" method="post" enctype="multipart/form-data" onsubmit="handlePrescriptionSubmit(event)">
+            <div class="upload-area" id="uploadArea">
+              <i class="fas fa-file-medical fa-3x mb-3"></i>
+              <h4>Drag & Drop or Click to Upload</h4>
+              <p>Upload a clear image of your prescription</p>
+              <input type="file" id="prescription" name="prescription" accept="image/*" required style="display: none;">
+              <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('prescription').click()">
+                Choose File
+              </button>
+            </div>
+            <div id="filePreview" style="display: none; margin-top: 20px;">
+              <img id="previewImage" src="" alt="Preview" style="max-width: 300px; margin-bottom: 10px;">
+              <p id="fileName"></p>
+              <button type="submit" class="btn btn-success btn-analyze">
+                <i class="fas fa-microscope"></i> Analyze Prescription
+              </button>
+            </div>
+          </form>
+
+          <!-- Analysis Results Section -->
+          <div id="analysisResults" style="display: none; margin-top: 30px;">
+            <h4 class="mb-4">Prescription Analysis Results</h4>
+            
+            <!-- Patient Info -->
+            <div class="info-section mb-4">
+              <h5>Patient Information</h5>
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Patient Name:</label>
+                  <span id="patientName"></span>
+                </div>
+                <div class="info-item">
+                  <label>Date:</label>
+                  <span id="prescriptionDate"></span>
+                </div>
+                <div class="info-item">
+                  <label>Prescriber:</label>
+                  <span id="prescriber"></span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Medicines Table -->
+            <div class="medicines-section">
+              <h5>Prescribed Medicines</h5>
+              <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                  <thead class="thead-light">
+                    <tr>
+                      <th>Medicine Name</th>
+                      <th>Dosage</th>
+                      <th>Purpose</th>
+                      <th>Instructions</th>
+                      <th>Warnings</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="medicinesTableBody">
+                    <!-- Will be populated by JavaScript -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Additional Info -->
+            <div class="additional-info mt-4">
+              <h5>Additional Information</h5>
+              <div class="info-grid">
+                <div class="info-item">
+                  <label>Manufacturer:</label>
+                  <span id="manufacturer"></span>
+                </div>
+                <div class="info-item">
+                  <label>Lot Number:</label>
+                  <span id="lotNumber"></span>
+                </div>
+                <div class="info-item">
+                  <label>Expiration Date:</label>
+                  <span id="expirationDate"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Previous Analyses -->
+      <div class="card shadow mt-10">
+        <div class="card-header py-3">
+          <h3 class="m-0 font-weight-bold mt-10">Previous Analyses</h3>
+        </div>
+        <div class="card-body">
+          {{if .Prescriptions}}
+            <div class="table-responsive">
+              <table class="table table-bordered table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Analysis</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{range .Prescriptions}}
+                  <tr>
+                    <td>{{.UploadDate.Format "Jan 02, 2006 15:04"}}</td>
+                    <td>
+                      <button class="btn btn-link" onclick="showAnalysis('{{.ID.Hex}}')">
+                        View Analysis
+                      </button>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary btn-sm" onclick="downloadAnalysis('{{.ID.Hex}}')">
+                        <i class="fas fa-download"></i> Download
+                      </button>
+                    </td>
+                  </tr>
+                  {{end}}
+                </tbody>
+              </table>
+            </div>
+          {{else}}
+            <p class="text-center">No prescriptions analyzed yet. Upload one to get started!</p>
+          {{end}}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Analysis Modal -->
+  <div class="modal" id="analysisModal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Prescription Analysis</h2>
+      <div id="analysisContent"></div>
+    </div>
+  </div>
+
+  <!-- AI Chat -->
+  <div class="chat-container">
+    <button class="chat-toggle btn btn-primary">
+      <i class="fas fa-comment-medical"></i>
+    </button>
+    <div class="chat-modal">
+      <div class="chat-header">
+        <h4>MedAI Assistant</h4>
+        <div class="chat-modes">
+          <button class="mode-btn active" data-mode="general" id="general_section">General Health</button>
+          <button class="mode-btn" data-mode="disease" id="disease_section">Disease Prediction</button>
+        </div>
+        <button class="close-chat">&times;</button>
+      </div>
+      <div class="chat-content">
+        <div class="chat-messages"></div>
+        <div class="disease-form" style="display: none;">
+          <form id="diseaseForm">
+            <div class="mb-3">
+              <label>Age</label>
+              <input type="number" name="age" required>
+            </div>
+            <div class="mb-3">
+              <label>Gender</label>
+              <select name="gender" required>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Symptoms</label>
+              <textarea name="symptoms" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label>Medical History</label>
+              <textarea name="medical_history" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Analyze</button>
+          </form>
+        </div>
+        <div class="chat-input">
+          <input type="text" placeholder="Type your health query...">
+          <button class="send-btn btn btn-primary">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-logo">
+          <h2><i class="fas fa-heartbeat"></i> MediMate</h2>
+          <p>Quick and efficient doctor appointments at your fingertips</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#doctors">Doctors</a></li>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-links">
+          <h3>Services</h3>
+          <ul>
+            <li><a href="#">Find a Doctor</a></li>
+            <li><a href="#">Online Consultation</a></li>
+            <li><a href="#">Health Checkup</a></li>
+            <li><a href="#">Lab Tests</a></li>
+            <li><a href="#">Medical Tourism</a></li>
+          </ul>
+        </div>
+        <div class="footer-newsletter">
+          <h3>Newsletter</h3>
+          <p>Subscribe to our newsletter for health tips and updates</p>
+          <form id="newsletterForm">
+            <input type="email" placeholder="Your Email" required>
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 MediMate. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/static/js/main.js"></script>
+  <script>
+    // File upload preview
+    document.getElementById('prescription').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImage').src = e.target.result;
+          document.getElementById('fileName').textContent = file.name;
+          document.getElementById('filePreview').style.display = 'block';
+          document.getElementById('uploadArea').style.display = 'none';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Drag and drop functionality
+    const uploadArea = document.getElementById('uploadArea');
+    
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      uploadArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+      uploadArea.classList.add('highlight');
+    }
+
+    function unhighlight(e) {
+      uploadArea.classList.remove('highlight');
+    }
+
+    uploadArea.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const file = dt.files[0];
+      document.getElementById('prescription').files = dt.files;
+      
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('previewImage').src = e.target.result;
+          document.getElementById('fileName').textContent = file.name;
+          document.getElementById('filePreview').style.display = 'block';
+          document.getElementById('uploadArea').style.display = 'none';
+        }
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Modal functionality
+    const modal = document.getElementById('analysisModal');
+    const span = document.getElementsByClassName('close')[0];
+
+    span.onclick = function() {
+      modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+
+    function showAnalysis(id) {
+      // Here you would typically fetch the analysis data from the server
+      // For now, we'll just show a placeholder
+      const analysisContent = document.getElementById('analysisContent');
+      analysisContent.innerHTML = 'Loading analysis...';
+      modal.style.display = 'block';
+      
+      fetch(`/prescription/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          analysisContent.innerHTML = formatAnalysis(data);
+        })
+        .catch(error => {
+          analysisContent.innerHTML = 'Error loading analysis.';
+        });
+    }
+
+    function formatAnalysis(data) {
+      try {
+        const analysis = JSON.parse(data.analysis);
+        let html = '<div class="analysis-content">';
+        
+        if (analysis.medicines) {
+          html += '<h3>Medicines</h3><ul>';
+          analysis.medicines.forEach(med => {
+            html += `
+              <li>
+                <strong>${med.name}</strong><br>
+                Dosage: ${med.dosage}<br>
+                Purpose: ${med.disease}<br>
+                Usage: ${med.usage}
+              </li>
+            `;
+          });
+          html += '</ul>';
+        }
+
+        if (analysis.warnings) {
+          html += '<h3>Warnings</h3><ul>';
+          analysis.warnings.forEach(warning => {
+            html += `<li>${warning}</li>`;
+          });
+          html += '</ul>';
+        }
+
+        html += '</div>';
+        return html;
+      } catch (e) {
+        return '<p>Unable to parse analysis data.</p>';
+      }
+    }
+
+    function downloadAnalysis(id) {
+      // Implement download functionality
+      fetch(`/prescription/${id}/download`)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `prescription-analysis-${id}.pdf`;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+    }
+
+    function handlePrescriptionSubmit(event) {
+      event.preventDefault();
+      
+      const form = event.target;
+      const formData = new FormData(form);
+      const loadingSpinner = document.createElement('div');
+      loadingSpinner.className = 'loading-spinner';
+      loadingSpinner.innerHTML = '<i class="fas fa-spinner fa-spin"></i><p>Analyzing prescription...</p>';
+      
+      // Hide previous results if any
+      document.getElementById('analysisResults').style.display = 'none';
+      
+      // Show loading spinner
+      form.appendChild(loadingSpinner);
+      loadingSpinner.style.display = 'block';
+
+      fetch('/analyze-prescription', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        loadingSpinner.remove();
+        displayAnalysisResults(data.analysis);
+      })
+      .catch(error => {
+        loadingSpinner.remove();
+        alert('Error analyzing prescription. Please try again.');
+        console.error('Error:', error);
+      });
+    }
+
+    function displayAnalysisResults(analysisJson) {
+      // Parse the JSON string (remove the markdown code block markers if present)
+      const cleanJson = analysisJson.replace(/```json\n|\n```/g, '');
+      const analysis = JSON.parse(cleanJson);
+      
+      // Show the results section
+      document.getElementById('analysisResults').style.display = 'block';
+      
+      // Update patient info
+      document.getElementById('patientName').textContent = analysis.patient_name || 'Not specified';
+      document.getElementById('prescriptionDate').textContent = analysis.date || 'Not specified';
+      document.getElementById('prescriber').textContent = analysis.prescriber || 'Not specified';
+      
+      // Update medicines table
+      const tableBody = document.getElementById('medicinesTableBody');
+      tableBody.innerHTML = ''; // Clear existing rows
+      
+      analysis.medicines.forEach(medicine => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${medicine.name || 'Unknown'}</td>
+          <td>${medicine.dosage || 'Not specified'}</td>
+          <td>${medicine.purpose || 'Unknown'}</td>
+          <td>${medicine.instructions || 'Not specified'}</td>
+          <td>${medicine.warnings || 'None'}</td>
+          <td>
+            <span class="status-badge ${medicine.dosage_appropriate?.toLowerCase() === 'suspicious' ? 'status-suspicious' : 'status-appropriate'}">
+              ${medicine.dosage_appropriate || 'Unknown'}
+            </span>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+      
+      // Update additional info
+      document.getElementById('manufacturer').textContent = analysis.manufacturer || 'Not specified';
+      document.getElementById('lotNumber').textContent = analysis.lot_number || 'Not specified';
+      document.getElementById('expirationDate').textContent = analysis.expiration_date || 'Not specified';
+      
+      // Scroll to results
+      document.getElementById('analysisResults').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+
+  <style>
+    .upload-area {
+      border: 2px dashed #ccc;
+      border-radius: 8px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .upload-area.highlight {
+      border-color: #4e73df;
+      background-color: rgba(78, 115, 223, 0.1);
+    }
+
+    .btn-analyze {
+      padding: 10px 20px;
+      font-size: 1.1em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px auto;
+    }
+
+    .info-section {
+      background: #f8f9fc;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .info-item label {
+      font-weight: 600;
+      color: #4e73df;
+    }
+
+    .medicines-section {
+      margin-top: 30px;
+    }
+
+    .table thead th {
+      background-color: #4e73df;
+      color: white;
+      font-weight: 500;
+    }
+
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 0.85em;
+      font-weight: 500;
+    }
+
+    .status-suspicious {
+      background-color: #ffebee;
+      color: #c62828;
+    }
+
+    .status-appropriate {
+      background-color: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .loading-spinner {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading-spinner i {
+      font-size: 2em;
+      color: #4e73df;
+    }
+  </style>
+</body>
+</html>
+{{end}}

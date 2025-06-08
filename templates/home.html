@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediMate - Smart Prescription Analysis</title>
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">
+        <h1><i class="fas fa-heartbeat pulse"></i> MediMate</h1>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <i class="fas fa-times" id="closeMenu"></i>
+        <ul>
+          <li><a href="/#home" class="active">Home</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="auth-buttons">
+        {{if .User}}
+          <span class="user-info">Logged in as: {{.User}} ({{.Role}})</span>
+          <a href="/logout" class="btn btn-secondary">Logout</a>
+        {{else}}
+          <a href="/login" class="btn btn-primary">Login</a>
+          <a href="/register" class="btn btn-primary">Sign Up</a>
+        {{end}}
+      </div>
+      <i class="fas fa-bars" id="menuIcon"></i>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero-content">
+        <h1>Understand Your Prescriptions with <span class="highlight">AI</span></h1>
+        <p>Upload your prescription and get instant analysis of medicines, dosages, and potential interactions. We help you understand your medications better and ensure safe usage.</p>
+        <div class="hero-buttons">
+          <a href="/dashboard" class="btn btn-large btn-primary" id="uploadBtn">Upload Prescription</a>
+          <button class="btn btn-large btn-secondary" id="learnMoreBtn">Learn More</button>
+        </div>
+      </div>
+      <div class="hero-image">
+        <img src="https://images.pexels.com/photos/4021775/pexels-photo-4021775.jpeg" alt="Prescription Analysis" class="main-image">
+        <div class="stats-card">
+          <div class="stat">
+            <h3>100%</h3>
+            <p>Accurate</p>
+          </div>
+          <div class="stat">
+            <h3>24/7</h3>
+            <p>Support</p>
+          </div>
+          <div class="stat">
+            <h3>Safe</h3>
+            <p>Analysis</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <h2>Our Services</h2>
+        <p>We help you understand your prescriptions better and ensure safe medication usage</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-file-medical"></i>
+          </div>
+          <h3>Prescription Analysis</h3>
+          <p>Get detailed analysis of your prescription with medicine names and dosages</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-pills"></i>
+          </div>
+          <h3>Medicine Information</h3>
+          <p>Learn about each medicine's purpose and proper usage instructions</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3>Dosage Validation</h3>
+          <p>Verify if prescribed dosages are within safe limits</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">
+            <i class="fas fa-allergies"></i>
+          </div>
+          <h3>Side Effects</h3>
+          <p>Information about potential side effects and warnings</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works">
+    <div class="container">
+      <div class="section-header">
+        <h2>How MediMate Works</h2>
+        <p>Get your prescription analyzed in 3 simple steps</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Upload Prescription</h3>
+            <p>Take a clear photo of your prescription and upload it</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>AI Analysis</h3>
+            <p>Our AI analyzes the prescription and extracts key information</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Get Results</h3>
+            <p>View detailed analysis with medicine info and safety checks</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="about">
+    <div class="container">
+      <div class="section-header">
+        <h2>Why Choose MediMate?</h2>
+        <p>Your prescription safety companion</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature">
+          <i class="fas fa-shield-alt"></i>
+          <h3>Safe & Secure</h3>
+          <p>Your prescriptions and medical data are encrypted and secure</p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-brain"></i>
+          <h3>AI-Powered</h3>
+          <p>Advanced AI technology for accurate prescription analysis</p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-clock"></i>
+          <h3>Instant Results</h3>
+          <p>Get analysis results within seconds</p>
+        </div>
+        <div class="feature">
+          <i class="fas fa-user-shield"></i>
+          <h3>Privacy First</h3>
+          <p>Your data is never shared with third parties</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <h2>Contact Us</h2>
+        <p>Have questions? We're here to help</p>
+      </div>
+      <div class="contact-content">
+        <div class="contact-info">
+          <div class="contact-item">
+            <i class="fas fa-envelope"></i>
+            <h3>Email</h3>
+            <p>support@medimate.com</p>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-phone"></i>
+            <h3>Phone</h3>
+            <p>+1 (555) 123-4567</p>
+          </div>
+          <div class="contact-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Address</h3>
+            <p>123 Health Street, Medical District</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2><i class="fas fa-heartbeat"></i> MediMate</h2>
+          <p>Your prescription safety companion</p>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/#home">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-social">
+          <h3>Follow Us</h3>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 MediMate. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="static/js/main.js"></script>
+</body>
+</html>

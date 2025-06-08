@@ -1,0 +1,199 @@
+/* Container Styling */
+.buy_med_container {
+  max-width: 900px;
+  margin: 100px auto;
+  padding: 0 15px;
+}
+
+/* Card Styling */
+.med_card {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+  overflow: hidden; /* Ensures box shadow respects border radius */
+}
+
+.card-header {
+  background-color: #007bff; /* Primary color */
+  color: #ffffff;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  margin: 0; /* Resets h2 margin */
+  font-size: 1.5em;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Prescription Upload Section */
+.prescription-upload .upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.prescription-upload .form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.prescription-upload .form-label {
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #555;
+}
+
+.prescription-upload .form-control-file {
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.prescription-upload .form-control-file:hover {
+  border-color: #adb5bd;
+}
+
+.prescription-upload .form-control-file:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Button Styling */
+.btn {
+  padding: 12px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.btn-submit {
+  align-self: flex-start; /* Aligns button to the start if form is flex column */
+}
+
+/* Prescription Results Section */
+.prescription-results .card-header {
+    background-color: #28a745; /* Success color for results */
+}
+
+.table-responsive {
+  overflow-x: auto; /* Ensures table is scrollable on small screens */
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  color: #212529;
+  border-collapse: collapse; /* Removes default spacing between cells */
+}
+
+.table th,
+.table td {
+  padding: 12px 15px;
+  vertical-align: top;
+  border-top: 1px solid #dee2e6;
+  text-align: left;
+}
+
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #dee2e6;
+  background-color: #e9ecef; /* Light grey for header */
+  font-weight: bold;
+}
+
+.table-header-custom th { /* More specific styling for header */
+  background-color: #f2f2f2;
+  color: #333;
+  font-size: 0.95em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+  color: #212529;
+}
+
+/* Responsive Adjustments (Optional Example) */
+@media (max-width: 768px) {
+  .card-header {
+    font-size: 1.25em;
+  }
+  .btn {
+    width: 100%; /* Full width buttons on smaller screens */
+    margin-top: 10px;
+  }
+  .btn-submit {
+    align-self: stretch;
+  }
+  .table thead {
+    display: none; /* Hide table header on very small screens, show data as blocks */
+  }
+  .table, .table tbody, .table tr, .table td {
+    display: block;
+    width: 100%;
+  }
+  .table tr {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  .table td {
+    text-align: right;
+    padding-left: 50%;
+    position: relative;
+    border-top: none; /* Remove default top border for stacked view */
+  }
+  .table td::before {
+    content: attr(data-label); /* Needs data-label attributes in HTML or JS to populate */
+    position: absolute;
+    left: 10px;
+    width: calc(50% - 20px);
+    padding-right: 10px;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+  }
+  /* If using the above mobile table approach, you'd add data-label attributes to your <td>:
+     <td data-label="#">{{add $i 1}}</td>
+     <td data-label="Medicine Name">{{$med.Name}}</td>
+     etc.
+  */
+}
+
+@media (max-width: 576px) {
+    .container {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .card-body {
+        padding: 15px;
+    }
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MediMate - Register</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="logo">
+        <h1><i class="fas fa-heartbeat pulse"></i> MediMate</h1>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <i class="fas fa-times" id="closeMenu"></i>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="auth-buttons">
+        <a href="/login" class="btn btn-primary">Login</a>
+        <a href="/register" class="btn btn-primary active">Sign Up</a>
+      </div>
+      <i class="fas fa-bars" id="menuIcon"></i>
+    </div>
+  </nav>
+
+  <!-- Registration Form -->
+  <section class="form-section mt-30" style="padding-top: 80px;">
+    <div class="container form-container p-20">
+      <h2>Join MediMate</h2>
+      <p class="form-description">Create your account to start analyzing prescriptions and ensuring safe medication usage</p>
+      <form action="/register" method="post" class="register-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Choose a username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+          <small class="password-hint">Use at least 8 characters with a mix of letters, numbers, and symbols</small>
+        </div>
+        <input type="hidden" name="role" value="patient">
+        <button type="submit" class="btn btn-primary btn-full">Create Account</button>
+      </form>
+      <p class="redirect-text">Already have an account? <a href="/login">Log in</a></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2><i class="fas fa-heartbeat"></i> MediMate</h2>
+          <p>Your prescription safety companion</p>
+        </div>
+        <div class="footer-links">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer-social">
+          <h3>Follow Us</h3>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2024 MediMate. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    .password-hint {
+      color: #666;
+      font-size: 0.85em;
+      margin-top: 5px;
+      display: block;
+    }
+    
+    .form-description {
+      color: #666;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+  </style>
+
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
