@@ -641,12 +641,15 @@
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
-        // Remove the prescription card from the UI
-        const card = document.querySelector(`[data-prescription-id="${prescriptionId}"]`);
-        if (card) {
-          card.remove();
-          showAlert('Prescription deleted successfully', 'success');
-        }
+        // Show success message
+        showAlert('Prescription deleted successfully', 'success');
+
+        // Wait for a short moment to show the success message
+        setTimeout(() => {
+          // Refresh the page
+          window.location.reload();
+        }, 1000);
+
       } catch (error) {
         console.error('Error:', error);
         showAlert(`Error deleting prescription: ${error.message}`, 'danger');
