@@ -17,6 +17,8 @@ import (
 	"io"
 	"fmt"
 	"github.com/joho/godotenv"
+	"strings"
+	"github.com/jung-kurt/gofpdf"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -399,6 +401,222 @@ func predictDiseaseHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(map[string]string{"response": response})
 }
 
+func getPrescriptionHandler(w http.ResponseWriter, r *http.Request) {
+	username, _, loggedIn := getLoggedInUser(r)
+	if !loggedIn {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract prescription ID from URL
+	prescriptionID := r.URL.Path[len("/prescription/"):]
+	if prescriptionID == "" {
+		http.Error(w, "Invalid prescription ID", http.StatusBadRequest)
+		return
+	}
+
+	// Convert string ID to ObjectID
+	objID, err := primitive.ObjectIDFromHex(prescriptionID)
+	if err != nil {
+		http.Error(w, "Invalid prescription ID format", http.StatusBadRequest)
+		return
+	}
+
+	// Find prescription in database
+	var prescription Prescription
+	err = prescriptionsColl.FindOne(context.Background(), bson.M{
+		"_id": objID,
+		"patient_id": username, // Ensure user can only access their own prescriptions
+	}).Decode(&prescription)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			http.Error(w, "Prescription not found", http.StatusNotFound)
+		} else {
+			log.Printf("Error fetching prescription: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Clean the analysis string by removing markdown code block
+	cleanAnalysis := prescription.Analysis
+	cleanAnalysis = strings.TrimPrefix(cleanAnalysis, "```json\n")
+	cleanAnalysis = strings.TrimSuffix(cleanAnalysis, "\n```")
+
+	// Return prescription data as JSON
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]string{"analysis": cleanAnalysis})
+}
+
+func downloadPrescriptionHandler(w http.ResponseWriter, r *http.Request) {
+	username, _, loggedIn := getLoggedInUser(r)
+	if !loggedIn {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Extract prescription ID from URL
+	prescriptionID := r.URL.Path[len("/prescription/"):len(r.URL.Path)-len("/download")]
+	if prescriptionID == "" {
+		http.Error(w, "Invalid prescription ID", http.StatusBadRequest)
+		return
+	}
+
+	// Convert string ID to ObjectID
+	objID, err := primitive.ObjectIDFromHex(prescriptionID)
+	if err != nil {
+		http.Error(w, "Invalid prescription ID format", http.StatusBadRequest)
+		return
+	}
+
+	// Find prescription in database
+	var prescription Prescription
+	err = prescriptionsColl.FindOne(context.Background(), bson.M{
+		"_id": objID,
+		"patient_id": username, // Ensure user can only access their own prescriptions
+	}).Decode(&prescription)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			http.Error(w, "Prescription not found", http.StatusNotFound)
+		} else {
+			log.Printf("Error fetching prescription: %v", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Clean the analysis string by removing markdown code block
+	cleanAnalysis := prescription.Analysis
+	cleanAnalysis = strings.TrimPrefix(cleanAnalysis, "```json\n")
+	cleanAnalysis = strings.TrimSuffix(cleanAnalysis, "\n```")
+
+	// Parse the analysis JSON
+	var analysis map[string]interface{}
+	err = json.Unmarshal([]byte(cleanAnalysis), &analysis)
+	if err != nil {
+		log.Printf("Error parsing analysis data: %v", err)
+		http.Error(w, "Error parsing analysis data", http.StatusInternalServerError)
+		return
+	}
+
+	// Create PDF
+	pdf := gofpdf.New("P", "mm", "A4", "")
+	pdf.AddPage()
+
+	// Set font
+	pdf.SetFont("Arial", "B", 16)
+	
+	// Header
+	pdf.Cell(190, 10, "MediMate Prescription Analysis Report")
+	pdf.Ln(15)
+
+	// Patient Information Section
+	pdf.SetFont("Arial", "B", 12)
+	pdf.Cell(190, 10, "Patient Information")
+	pdf.Ln(8)
+	
+	pdf.SetFont("Arial", "", 11)
+	pdf.Cell(40, 8, "Date:")
+	pdf.Cell(150, 8, prescription.UploadDate.Format("January 2, 2006 15:04:05"))
+	pdf.Ln(8)
+	
+	pdf.Cell(40, 8, "Patient ID:")
+	pdf.Cell(150, 8, prescription.PatientID)
+	pdf.Ln(8)
+	
+	pdf.Cell(40, 8, "Patient Name:")
+	pdf.Cell(150, 8, fmt.Sprintf("%v", analysis["patient_name"]))
+	pdf.Ln(8)
+	
+	pdf.Cell(40, 8, "Prescriber:")
+	pdf.Cell(150, 8, fmt.Sprintf("%v", analysis["prescriber"]))
+	pdf.Ln(15)
+
+	// Medicines Section
+	pdf.SetFont("Arial", "B", 12)
+	pdf.Cell(190, 10, "Prescribed Medicines")
+	pdf.Ln(10)
+
+	if medicines, ok := analysis["medicines"].([]interface{}); ok {
+		for i, med := range medicines {
+			if medicine, ok := med.(map[string]interface{}); ok {
+				pdf.SetFont("Arial", "B", 11)
+				pdf.Cell(190, 8, fmt.Sprintf("%d. %v", i+1, medicine["name"]))
+				pdf.Ln(8)
+				
+				pdf.SetFont("Arial", "", 11)
+				pdf.Cell(40, 8, "Dosage:")
+				pdf.Cell(150, 8, fmt.Sprintf("%v", medicine["dosage"]))
+				pdf.Ln(6)
+				
+				pdf.Cell(40, 8, "Purpose:")
+				pdf.Cell(150, 8, fmt.Sprintf("%v", medicine["purpose"]))
+				pdf.Ln(6)
+				
+				pdf.Cell(40, 8, "Instructions:")
+				pdf.Cell(150, 8, fmt.Sprintf("%v", medicine["instructions"]))
+				pdf.Ln(6)
+
+				if warnings, exists := medicine["warnings"]; exists {
+					pdf.Cell(40, 8, "Warnings:")
+					// Use MultiCell for potentially long warning text
+					currentX, currentY := pdf.GetXY()
+					pdf.MultiCell(150, 8, fmt.Sprintf("%v", warnings), "", "", false)
+					pdf.SetXY(currentX, currentY)
+					pdf.Ln(8)
+				}
+
+				if appropriate, exists := medicine["dosage_appropriate"]; exists {
+					pdf.Cell(40, 8, "Dosage Status:")
+					pdf.Cell(150, 8, fmt.Sprintf("%v", appropriate))
+					pdf.Ln(8)
+				}
+
+				pdf.Ln(4) // Space between medicines
+			}
+		}
+	}
+
+	// Additional Information Section
+	pdf.SetFont("Arial", "B", 12)
+	pdf.Cell(190, 10, "Additional Information")
+	pdf.Ln(8)
+	
+	pdf.SetFont("Arial", "", 11)
+	pdf.Cell(40, 8, "Manufacturer:")
+	pdf.Cell(150, 8, fmt.Sprintf("%v", analysis["manufacturer"]))
+	pdf.Ln(8)
+	
+	pdf.Cell(40, 8, "Lot Number:")
+	pdf.Cell(150, 8, fmt.Sprintf("%v", analysis["lot_number"]))
+	pdf.Ln(8)
+	
+	pdf.Cell(40, 8, "Expiration Date:")
+	pdf.Cell(150, 8, fmt.Sprintf("%v", analysis["expiration_date"]))
+	pdf.Ln(8)
+
+	// Footer
+	pdf.SetY(-15)
+	pdf.SetFont("Arial", "I", 8)
+	pdf.Cell(0, 10, fmt.Sprintf("Generated by MediMate on %s", time.Now().Format("January 2, 2006 15:04:05")))
+
+	// Set response headers
+	w.Header().Set("Content-Type", "application/pdf")
+	w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"prescription-analysis-%s.pdf\"", prescriptionID))
+	w.Header().Set("Cache-Control", "no-cache")
+	w.Header().Set("Content-Description", "File Transfer")
+
+	// Write PDF to response
+	err = pdf.Output(w)
+	if err != nil {
+		log.Printf("Error writing PDF: %v", err)
+		http.Error(w, "Error generating PDF", http.StatusInternalServerError)
+		return
+	}
+}
+
 func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -431,6 +649,13 @@ func main() {
 	http.HandleFunc("/analyze-prescription", analyzePrescriptionHandler)
 	http.HandleFunc("/chat", chatHandler)
 	http.HandleFunc("/predict-disease", predictDiseaseHandler)
+	http.HandleFunc("/prescription/", func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/download") {
+			downloadPrescriptionHandler(w, r)
+		} else {
+			getPrescriptionHandler(w, r)
+		}
+	})
 
 	// Serve static files
 	fs := http.FileServer(http.Dir("static"))
