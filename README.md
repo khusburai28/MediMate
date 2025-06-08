@@ -1,50 +1,103 @@
-# FastMedBooking
-Rahul, a young professional, wakes up with a severe fever and decides to visit a doctor. He tries calling multiple clinics but is either put on hold or told that the next available appointment is days away. Frustrated and unwell, he wishes there were an easier way to book a doctor’s appointment instantly without long wait times or unnecessary hassle.
+# MediMate - Smart Prescription Analysis
 
-The Solution: FastMedBooking
+MediMate is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
 
-FastMedBooking is a lightweight and efficient static website built with Golang that makes doctor-patient appointment booking seamless. With just a few clicks, users can schedule appointments hassle-free, ensuring quick and convenient medical consultations.
+## Features
 
-Features
+- **AI-Powered Prescription Analysis**
+  - Upload prescription images for instant analysis
+  - Extract medicine names, dosages, and instructions
+  - Identify potential drug interactions and warnings
+  - Validate dosage appropriateness
 
-1) Instant Appointment Booking – Book doctor appointments quickly and efficiently.
+- **User Dashboard**
+  - View all previous prescription analyses
+  - Download detailed PDF reports
+  - Direct links to purchase medicines on PharmEasy
+  - Track prescription history
 
-2) Simple and Intuitive Dashboard – Easy-to-use interface for both doctors and patients.
+- **Security & Privacy**
+  - Secure user authentication
+  - Encrypted data storage
+  - Private prescription access
+  - HIPAA-compliant data handling
 
-3) Fast and Reliable – Golang-powered backend ensures high-speed performance and stability.
+## Technology Stack
 
-4) Secure & Scalable – Built with best practices to ensure data privacy and smooth scalability.
-   
+- **Backend**
+  - Go (Golang) for server implementation
+  - MongoDB for data storage
+  - Google's Gemini AI for prescription analysis
 
-Doctor & Patient Dashboard – Dedicated spaces for doctors to manage schedules and for patients to track bookings.
+- **Frontend**
+  - HTML5, CSS3, JavaScript
+  - Responsive design
+  - Modern UI/UX principles
 
-1) Seamless Communication – Doctors and patients can receive automated updates and reminders.
+## Prerequisites
 
-2) Mobile-Friendly Design – Optimized for both desktop and mobile devices.
+- Go 1.16 or higher
+- MongoDB 4.4 or higher
+- Google Cloud API credentials (for Gemini AI)
 
-3) Minimal Setup Required – Get started with just a few steps, no complex installation needed.
-   
+## Installation
 
-Technologies Used
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/khusburai28/medimate.git
+   cd medimate
+   ```
 
-1) Golang – Backend logic for handling appointment scheduling.
+2. Install dependencies:
+   ```bash
+   go mod download
+   ```
 
-2) HTML , CSS & Javascript – Simple and effective UI for the dashboard.
-   
+3. Set up environment variables:
+   ```bash
+   cp .env.example .env
+   # Edit .env with your configuration
+   ```
 
-Installation
+4. Start MongoDB:
+   ```bash
+   # Make sure MongoDB is running on your system
+   ```
 
-1) Clone the repository:git clone https://github.com/khusburai28/FastMedBooking.git
-2) cd FastMedBooking
-3) Download dependencies: go mod tidy
-4) Installation: go run main.go
-5) Open index.html & Backend will run at: http://localhost:8080
+5. Run the application:
+   ```bash
+   go run main.go
+   ```
 
-Usage
+6. Access the application:
+   ```
+   http://localhost:8080
+   ```
 
-1) Patients can access the dashboard to book an appointment with their preferred doctor.
+## Environment Variables
 
-2) Doctors can view, accept, and manage appointments efficiently.
+Create a `.env` file with the following variables:
 
-3) Admins can monitor overall activities and ensure smooth operation
+```env
+MONGODB_URI=your_mongodb_connection_string
+GOOGLE_API_KEY=your_google_api_key
+SESSION_SECRET=your_session_secret
+```
+
+## API Endpoints
+
+- `POST /analyze-prescription` - Upload and analyze a prescription
+- `GET /prescription/:id` - View a specific prescription analysis
+- `GET /prescription/:id/download` - Download prescription analysis as PDF
+- `POST /chat` - Chat with AI about medical queries
+- `POST /predict-disease` - Get disease predictions based on symptoms
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+
+## Screenshots
+
+
 

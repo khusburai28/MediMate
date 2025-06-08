@@ -137,9 +137,9 @@
       </div>
 
       <!-- Previous Analyses -->
-      <div class="card shadow mt-10">
+      <div class="card shadow" style="margin-top: 50px;">
         <div class="card-header py-3">
-          <h3 class="m-0 font-weight-bold mt-10">Previous Analyses</h3>
+          <h3 class="m-0 font-weight-bold">Previous Analyses</h3>
         </div>
         <div class="card-body">
           {{if .Prescriptions}}
@@ -408,6 +408,7 @@
           html += '<h3>Medicines</h3>';
           html += '<div class="medicines-list">';
           analysis.medicines.forEach((med, index) => {
+            const pharmEasyLink = `https://pharmeasy.in/search/all?name=${encodeURIComponent(med.name || '')}`;
             html += `
               <div class="medicine-item">
                 <h4>${index + 1}. ${med.name || 'Unknown Medicine'}</h4>
@@ -421,6 +422,11 @@
                       med.dosage_appropriate.toLowerCase() === 'suspicious' ? 'status-suspicious' : 'status-appropriate'
                     }">${med.dosage_appropriate}</span></li>` : 
                     ''}
+                  <li class="buy-medicine">
+                    <a href="${pharmEasyLink}" target="_blank" class="btn btn-primary btn-sm">
+                      <i class="fas fa-shopping-cart"></i> Buy on PharmEasy
+                    </a>
+                  </li>
                 </ul>
               </div>
             `;
@@ -727,6 +733,29 @@
 
     .close:hover {
       color: #333;
+    }
+
+    .buy-medicine {
+      margin-top: 12px !important;
+    }
+
+    .buy-medicine .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #10847e;
+      border-color: #10847e;
+      transition: all 0.3s ease;
+    }
+
+    .buy-medicine .btn:hover {
+      background-color: #0d6d68;
+      border-color: #0d6d68;
+      transform: translateY(-1px);
+    }
+
+    .buy-medicine .btn i {
+      font-size: 0.9em;
     }
   </style>
 </body>

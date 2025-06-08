@@ -19,6 +19,7 @@ import (
 	"github.com/joho/godotenv"
 	"strings"
 	"github.com/jung-kurt/gofpdf"
+	"net/url"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -571,6 +572,16 @@ func downloadPrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 				if appropriate, exists := medicine["dosage_appropriate"]; exists {
 					pdf.Cell(40, 8, "Dosage Status:")
 					pdf.Cell(150, 8, fmt.Sprintf("%v", appropriate))
+					pdf.Ln(8)
+				}
+
+				// Add PharmEasy link
+				if name, ok := medicine["name"].(string); ok && name != "" {
+					pdf.Cell(40, 8, "Purchase Link:")
+					pharmEasyLink := fmt.Sprintf("https://pharmeasy.in/search/all?name=%s", url.QueryEscape(name))
+					pdf.SetTextColor(0, 0, 255) // Blue color for link
+					pdf.Cell(150, 8, pharmEasyLink)
+					pdf.SetTextColor(0, 0, 0) // Reset to black
 					pdf.Ln(8)
 				}
 
