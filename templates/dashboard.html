@@ -581,7 +581,7 @@
       }
     }
 
-    // Add downloadPDF function
+    // Update downloadPDF function to use the correct route
     async function downloadPDF(event, prescriptionId) {
       event.preventDefault();
       if (!prescriptionId) {
@@ -590,7 +590,7 @@
       }
 
       try {
-        const response = await fetch(`/download-prescription?id=${prescriptionId}`);
+        const response = await fetch(`/prescription/${prescriptionId}/download`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -616,7 +616,7 @@
       }
     }
 
-    // Update delete function to handle event
+    // Update delete function to handle the event properly
     async function deletePrescription(event, prescriptionId) {
       event.preventDefault();
       if (!prescriptionId) {
@@ -631,26 +631,29 @@
       try {
         const response = await fetch(`/delete-prescription?id=${prescriptionId}`, {
           method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
 
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         // Remove the prescription card from the UI
         const card = document.querySelector(`[data-prescription-id="${prescriptionId}"]`);
         if (card) {
           card.remove();
-          // Show success message
           showAlert('Prescription deleted successfully', 'success');
         }
       } catch (error) {
         console.error('Error:', error);
-        showAlert('Error deleting prescription. Please try again.', 'danger');
+        showAlert(`Error deleting prescription: ${error.message}`, 'danger');
       }
     }
 
-    // Add alert function for feedback
+    // Add showAlert function if not already present
     function showAlert(message, type) {
       const alertDiv = document.createElement('div');
       alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
@@ -670,7 +673,7 @@
       }, 5000);
     }
 
-    // Update displayPrescription function
+    // Update displayPrescription function to pass the correct ID
     function displayPrescription(data) {
       const prescriptionsList = document.getElementById('prescriptionsList');
       const card = document.createElement('div');

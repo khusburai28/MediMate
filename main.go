@@ -733,17 +733,40 @@ func deletePrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 	// Convert string ID to ObjectID
 	objID, err := primitive.ObjectIDFromHex(prescriptionID)
 	if err != nil {
+		log.Printf("Invalid prescription ID format: %v", err)
 		http.Error(w, "Invalid prescription ID", http.StatusBadRequest)
 		return
 	}
 
-	// Delete prescription
-	filter := bson.M{
-		"_id":       objID,
-		"patientID": username, // Ensure user can only delete their own prescriptions
+	// First, verify the prescription exists and belongs to the user
+	var prescription Prescription
+	err = prescriptionsColl.FindOne(context.Background(), bson.M{
+		"_id": objID,
+	}).Decode(&prescription)
+
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			log.Printf("Prescription not found: %s", prescriptionID)
+			http.Error(w, "Prescription not found", http.StatusNotFound)
+			return
+		}
+		log.Printf("Error finding prescription: %v", err)
+		http.Error(w, "Error finding prescription", http.StatusInternalServerError)
+		return
 	}
-	
-	result, err := prescriptionsColl.DeleteOne(context.Background(), filter)
+
+	// Verify ownership
+	if prescription.PatientID != username {
+		log.Printf("Unauthorized deletion attempt: user %s trying to delete prescription of user %s", username, prescription.PatientID)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	// Delete prescription
+	result, err := prescriptionsColl.DeleteOne(context.Background(), bson.M{
+		"_id": objID,
+	})
+
 	if err != nil {
 		log.Printf("Error deleting prescription: %v", err)
 		http.Error(w, "Error deleting prescription", http.StatusInternalServerError)
@@ -751,14 +774,18 @@ func deletePrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if result.DeletedCount == 0 {
-		http.Error(w, "Prescription not found or unauthorized", http.StatusNotFound)
+		log.Printf("No prescription deleted for ID: %s", prescriptionID)
+		http.Error(w, "Prescription not found", http.StatusNotFound)
 		return
 	}
 
 	// Return success response
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Prescription deleted successfully"})
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Prescription deleted successfully",
+		"id":      prescriptionID,
+	})
 }
 
 func main() {
