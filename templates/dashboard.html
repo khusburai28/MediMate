@@ -141,9 +141,9 @@
         <div class="card-header py-3">
           <h3 class="m-0 font-weight-bold">Previous Analyses</h3>
         </div>
-        <div class="card-body">
+        <div class="card-body text-center">
           {{if .Prescriptions}}
-            <div class="table-responsive">
+            <div class="table-responsive previous-analyses-table-wrapper">
               <table class="table table-bordered table-hover">
                 <thead>
                   <tr>
@@ -157,13 +157,16 @@
                   <tr>
                     <td>{{.UploadDate.Format "Jan 02, 2006 15:04"}}</td>
                     <td>
-                      <button class="btn btn-link" onclick="showAnalysis('{{.ID.Hex}}')">
+                      <button class="btn btn-info btn-sm" onclick="showAnalysis('{{.ID.Hex}}')">
                         View Analysis
                       </button>
                     </td>
                     <td>
                       <button class="btn btn-primary btn-sm" onclick="downloadAnalysis('{{.ID.Hex}}')">
                         <i class="fas fa-download"></i> Download
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="deletePrescription(event, '{{.ID.Hex}}')">
+                        <i class="fas fa-trash"></i> Delete
                       </button>
                     </td>
                   </tr>
@@ -827,6 +830,36 @@
       background-color: #4e73df;
       color: white;
       font-weight: 500;
+      padding: 12px 15px;
+    }
+
+    .table tbody td {
+      padding-top: 10px;
+    }
+
+    .table {
+      width: 100%;
+      margin-bottom: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .table thead th:first-child {
+      border-top-left-radius: 8px;
+    }
+
+    .table thead th:last-child {
+      border-top-right-radius: 8px;
+    }
+
+    .table tbody tr:last-child td:first-child {
+      border-bottom-left-radius: 8px;
+    }
+
+    .table tbody tr:last-child td:last-child {
+      border-bottom-right-radius: 8px;
     }
 
     .status-badge {
@@ -1098,6 +1131,13 @@
       color: #721c24;
       background-color: #f8d7da;
       border-color: #f5c6cb;
+    }
+
+    .previous-analyses-table-wrapper {
+      max-width: 100%;
+      overflow-x: auto;
+      margin: 0 auto;
+      text-align: left;
     }
   </style>
 </body>
