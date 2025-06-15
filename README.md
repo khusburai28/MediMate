@@ -201,3 +201,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### View Analysis 
 ![](/static/images/view_analysis.png)
+
+### Food Recommendations
+![](/static/images/food_recommendations.png)
+
+### AI Chat Bot
+![](/static/images/ai_chatbot.png)
+
+### AI Chat Bot - Disease Prediction - 1
+![](/static/images/disease_prediction_1.png)
+
+### AI Chat Bot - Disease Prediction - 2
+![](/static/images/disease_prediction_2.png)
