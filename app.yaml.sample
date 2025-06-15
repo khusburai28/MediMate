@@ -1,0 +1,16 @@
+runtime: go121
+handlers:
+  - url: /static
+    static_dir: static
+
+  - url: /.*
+    script: auto
+
+env_variables:
+  GEMINI_API_KEY: "AIzaSyDXXXXXXXXXXXXXXXXXXXpA8QI"
+  GEMINI_API_URL: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+  MONGODB_URI: "mongodb+srv://kXXXXXXXXXXXXXXXXXXXXXX.rwhzns3.mongodb.net/"
+
+automatic_scaling:
+  min_instances: 0
+  max_instances: 1

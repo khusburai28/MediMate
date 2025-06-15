@@ -59,17 +59,23 @@ MediMate is an AI-powered prescription analysis tool that helps users understand
    # Edit .env with your configuration
    ```
 
-4. Start MongoDB:
+4. Copy app.yaml.sample to app.yaml and update env for Google App Engine Deployment
+   ```bash
+   cp app.yaml.sample app.yaml
+   # Edit app.yaml with your configuration
+   ```
+
+5. Start MongoDB:
    ```bash
    # Make sure MongoDB is running on your system
    ```
 
-5. Run the application:
+6. Run the application:
    ```bash
    go run main.go
    ```
 
-6. Access the application:
+7. Access the application:
    ```
    http://localhost:8080
    ```
@@ -82,6 +88,31 @@ Create a `.env` file with the following variables:
 MONGODB_URI=your_mongodb_connection_string
 GOOGLE_API_KEY=your_google_api_key
 SESSION_SECRET=your_session_secret
+```
+
+## Deployment on Google App Engine
+
+```
+# Navigate to folder
+cd MediMate
+
+# CLI Login
+gcloud auth login
+
+# Set Project
+gcloud config set project PROJECT_ID_HERE
+
+# Deploy
+gcloud app deploy  ## Might fail on first attempt
+
+# Set permission
+gcloud projects add-iam-policy-binding PROJECT_ID_HERE --member="serviceAccount:PROJECT_ID_HERE@appspot.gserviceaccount.com"  --role="roles/storage.objectAdmin"
+
+# Deploy again
+gcloud app deploy
+
+# Open Production Link
+gcloud app browse
 ```
 
 ## API Endpoints
