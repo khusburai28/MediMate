@@ -6,6 +6,41 @@ MediMate is an AI-powered prescription analysis tool that helps users understand
 
 https://graphite-guard-462919-r1.de.r.appspot.com
 
+## Problem Statement
+
+*   **Medical Errors & Patient Safety**: Annually, **400,000 deaths** in India are attributed to adverse drug reactions (ADRs), with **5.2 million medical errors** reported. Prescription misinterpretation from poor handwriting leads to incorrect medication. (Source: NCBI, The Economic Times)
+*   **Doctor Shortage**: India's doctor-population ratio of **1:834** (June 2022) results in long wait times and limited access to primary medical advice, especially in rural areas. (Source: The Economic Times, World Bank Data)
+*   **Affordability of Medicines**: Branded medicines can be **5-22 times more expensive** than generics, leading to significant out-of-pocket costs for patients. This disparity highlights a potential saving of **INR 346.8 billion for statins** alone. (Source: PubMed, Cureus)
+
+## Our Solution
+
+MediMate addresses these issues with an AI-powered platform:
+
+*   **AI Medical Chatbot**: Offers preliminary medical advice, easing doctor burden and addressing shortages.
+*   **Prescription Analysis**: Digitizes handwritten prescriptions, reducing errors.
+*   **Generic Alternatives**: Suggests cost-effective generic options, dosage, and dietary advice.
+*   **Direct Purchase Links**: Streamlines medicine procurement via platforms like PharmEasy.
+
+## How we utilized MongoDB
+
+MongoDB was chosen for its key benefits in handling healthcare data:
+
+*   **Flexible Data Model**: Adapts to diverse medical data without rigid schemas.
+*   **Scalability**: Horizontally scales for growing users and analyses, ensuring high availability.
+*   **Performance**: Enables rapid data retrieval for quick analysis and real-time AI responses.
+*   **Rich Query Language**: Supports complex queries for historical data and search.
+*   **Seamless Integration**: Efficiently integrates with Go (Golang) backend.
+
+## How we utilized Google Cloud (specifically Google App Engine)
+
+Google App Engine provides a robust and managed environment for MediMate:
+
+*   **Scalability & Reliability**: Auto-scales based on demand, ensuring consistent performance.
+*   **Managed Infrastructure**: Reduces operational overhead, focusing development on core features.
+*   **Google Gemini AI Integration**: Leverages Gemini AI for advanced prescription analysis.
+*   **Global Reach**: Deploys on Google's global network for low latency.
+*   **Security & Compliance**: Benefits from robust security and HIPAA compliance for sensitive data.
+
 ## Features
 
 - **AI-Powered Prescription Analysis**
@@ -126,6 +161,19 @@ gcloud app browse
 - `GET /prescription/:id/download` - Download prescription analysis as PDF
 - `POST /chat` - Chat with AI about medical queries
 - `POST /predict-disease` - Get disease predictions based on symptoms
+
+## Future Enhancements
+
+*   Integration with wearable health devices for proactive health monitoring.
+*   Advanced AI models for personalized treatment plans and preventive care.
+*   Multi-language support for broader accessibility.
+*   Partnerships with more online pharmacies for wider medicine availability.
+
+## Connect with Us
+
+*   **LinkedIn**: [Link to LinkedIn Profile/Page]
+*   **GitHub**: [Link to GitHub Profile/Organization]
+*   **Email**: [Your Email Address]
 
 ## License
 
