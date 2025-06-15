@@ -2,6 +2,10 @@
 
 MediMate is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
 
+## YouTube Demonstration
+
+![](https://www.youtube.com/watch?v=AlFcAmmxvOk)
+
 ## Deployed Link (Deployed on Google App Engine)
 
 https://graphite-guard-462919-r1.de.r.appspot.com
