@@ -171,7 +171,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <tr>
 
 <td align="center">
-    <a href="https://github.com/khusburai">
+    <a href="https://github.com/khusburai28">
         <kbd><img src="https://avatars3.githubusercontent.com/khusburai?size=400" width="100px;" alt=""/></kbd><br />
         <sub><b>Khusbu Rai</b></sub>
     </a><br />
