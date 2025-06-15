@@ -162,19 +162,6 @@ gcloud app browse
 - `POST /chat` - Chat with AI about medical queries
 - `POST /predict-disease` - Get disease predictions based on symptoms
 
-## Future Enhancements
-
-*   Integration with wearable health devices for proactive health monitoring.
-*   Advanced AI models for personalized treatment plans and preventive care.
-*   Multi-language support for broader accessibility.
-*   Partnerships with more online pharmacies for wider medicine availability.
-
-## Connect with Us
-
-*   **LinkedIn**: [Link to LinkedIn Profile/Page]
-*   **GitHub**: [Link to GitHub Profile/Organization]
-*   **Email**: [Your Email Address]
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -203,5 +190,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Screenshots
 
+### Home 
+![](/static/images/home.png)
 
+### Login 
+![](/static/images/login.png)
 
+### Dashboard
+![](/static/images/dashboard.png)
+
+### View Analysis 
+![](/static/images/view_analysis.png)
