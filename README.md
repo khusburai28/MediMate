@@ -4,7 +4,9 @@ MediMate is an AI-powered prescription analysis tool that helps users understand
 
 ## YouTube Demonstration
 
-![YouTube Link](https://www.youtube.com/watch?v=AlFcAmmxvOk)
+- Click on this below image for playing video
+
+[![IMAGE_ALT](https://img.youtube.com/vi/AlFcAmmxvOk/0.jpg)](https://youtu.be/AlFcAmmxvOk)
 
 ## Deployed Link (Deployed on Google App Engine)
 
