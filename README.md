@@ -179,6 +179,27 @@ gcloud app browse
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Hackathon Teammate
+<table>
+<tr>
+
+<td align="center">
+    <a href="https://github.com/khusburai">
+        <kbd><img src="https://avatars3.githubusercontent.com/khusburai?size=400" width="100px;" alt=""/></kbd><br />
+        <sub><b>Arushi Jain</b></sub>
+    </a><br />
+</td>
+
+<td align="center">
+    <a href="https://github.com/PushpenderIndia">
+        <kbd><img src="https://avatars3.githubusercontent.com/PushpenderIndia?size=400" width="100px;" alt=""/></kbd><br />
+        <sub><b>Pushpender Singh</b></sub>
+    </a><br />
+</td>
+
+</tr>
+</tr>
+</table>
 
 ## Screenshots
 
