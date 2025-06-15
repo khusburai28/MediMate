@@ -124,6 +124,10 @@
     display: none;
   }
   
+  .steps-image {
+    margin-top: var(--spacing-xl);
+  }
+  
   .testimonial-slide {
     flex-direction: column;
     align-items: center;
@@ -151,6 +155,18 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+  }
+
+  .features-content {
+    flex-direction: column;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-image {
+    max-width: 100%;
   }
 }
 
