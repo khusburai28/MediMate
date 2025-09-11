@@ -1,6 +1,6 @@
-# MediMate - Smart Prescription Analysis
+# Cura - Smart Prescription Analysis
 
-MediMate is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
+Cura is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
 
 ## YouTube Demonstration
 
@@ -20,7 +20,7 @@ https://graphite-guard-462919-r1.de.r.appspot.com
 
 ## Our Solution
 
-MediMate addresses these issues with an AI-powered platform:
+Cura addresses these issues with an AI-powered platform:
 
 *   **AI Medical Chatbot**: Offers preliminary medical advice, easing doctor burden and addressing shortages.
 *   **Prescription Analysis**: Digitizes handwritten prescriptions, reducing errors.
@@ -39,7 +39,7 @@ MongoDB was chosen for its key benefits in handling healthcare data:
 
 ## How we utilized Google Cloud (specifically Google App Engine)
 
-Google App Engine provides a robust and managed environment for MediMate:
+Google App Engine provides a robust and managed environment for Cura:
 
 *   **Scalability & Reliability**: Auto-scales based on demand, ensuring consistent performance.
 *   **Managed Infrastructure**: Reduces operational overhead, focusing development on core features.
@@ -89,8 +89,8 @@ Google App Engine provides a robust and managed environment for MediMate:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/khusburai28/medimate.git
-   cd medimate
+   git clone https://github.com/khusburai28/Cura.git
+   cd Cura
    ```
 
 2. Install dependencies:
@@ -139,7 +139,7 @@ SESSION_SECRET=your_session_secret
 
 ```
 # Navigate to folder
-cd MediMate
+cd Cura
 
 # CLI Login
 gcloud auth login

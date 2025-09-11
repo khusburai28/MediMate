@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediMate - Dashboard</title>
+  <title data-i18n="app.name">Cura</title>
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="stylesheet" href="/static/css/responsive.css">
   <link rel="stylesheet" href="/static/css/chat.css">
@@ -16,24 +16,24 @@
   <nav class="navbar">
     <div class="container">
       <div class="logo">
-        <h1><i class="fas fa-heartbeat pulse"></i> MediMate</h1>
+        <h1><i class="fas fa-heartbeat pulse"></i> Cura</h1>
       </div>
       <div class="nav-links" id="navLinks">
         <i class="fas fa-times" id="closeMenu"></i>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/dashboard" class="active">Dashboard</a></li>
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#contact">Contact</a></li>
+          <li><a href="/" data-i18n="nav.home">Home</a></li>
+          <li><a href="/dashboard" class="active" data-i18n="nav.dashboard">Dashboard</a></li>
+          <li><a href="/#about" data-i18n="nav.about">About</a></li>
+          <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
       </div>
       <div class="auth-buttons">
         {{if .User}}
-          <span class="user-info">Logged in as: {{.User}}</span>
-          <a href="/logout" class="btn btn-secondary">Logout</a>
+          <span class="user-info"><span data-i18n="nav.logged_in_as">Logged in as:</span> {{.User}}</span>
+          <a href="/logout" class="btn btn-secondary" data-i18n="nav.logout">Logout</a>
         {{else}}
-          <a href="/login" class="btn btn-primary">Login</a>
-          <a href="/register" class="btn btn-primary">Sign Up</a>
+          <a href="/login" class="btn btn-primary" data-i18n="nav.login">Login</a>
+          <a href="/register" class="btn btn-primary" data-i18n="nav.signup">Sign Up</a>
         {{end}}
       </div>
       <i class="fas fa-bars" id="menuIcon"></i>
@@ -42,51 +42,49 @@
 
   <section class="dashboard-section py-5" style="padding-top: 120px;">
     <div class="container">
-      <h2 class="mb-4">Welcome to Your Prescription Dashboard</h2>
+      <h2 class="mb-4" data-i18n="dashboard.welcome">Welcome to Your Prescription Dashboard</h2>
 
       <!-- Upload Prescription Card -->
       <div class="card shadow mb-4">
         <div class="card-header py-3">
-          <h3 class="m-0 font-weight-bold">Upload Prescription</h3>
+          <h3 class="m-0 font-weight-bold" data-i18n="dashboard.upload_card">Upload Prescription</h3>
         </div>
         <div class="card-body">
           <form id="prescriptionForm" action="/analyze-prescription" method="post" enctype="multipart/form-data" onsubmit="handlePrescriptionSubmit(event)">
             <div class="upload-area" id="uploadArea">
               <i class="fas fa-file-medical fa-3x mb-3"></i>
-              <h4>Drag & Drop or Click to Upload</h4>
-              <p>Upload a clear image of your prescription</p>
+              <h4 data-i18n="dashboard.drag_drop">Drag & Drop or Click to Upload</h4>
+              <p data-i18n="dashboard.upload_clear">Upload a clear image of your prescription</p>
               <input type="file" id="prescription" name="prescription" accept="image/*" required style="display: none;">
-              <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('prescription').click()">
-                Choose File
-              </button>
+              <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('prescription').click()" data-i18n="dashboard.choose_file">Choose File</button>
             </div>
             <div id="filePreview" style="display: none; margin-top: 20px;">
               <img id="previewImage" src="" alt="Preview" style="max-width: 300px; margin-bottom: 10px;">
               <p id="fileName"></p>
               <button type="submit" class="btn btn-success btn-analyze">
-                <i class="fas fa-microscope"></i> Analyze Prescription
+                <i class="fas fa-microscope"></i> <span data-i18n="dashboard.analyze">Analyze Prescription</span>
               </button>
             </div>
           </form>
 
           <!-- Analysis Results Section -->
           <div id="analysisResults" style="display: none; margin-top: 30px;">
-            <h4 class="mb-4">Prescription Analysis Results</h4>
+            <h4 class="mb-4" data-i18n="dashboard.results">Prescription Analysis Results</h4>
             
             <!-- Patient Info -->
             <div class="info-section mb-4">
-              <h5>Patient Information</h5>
+              <h5 data-i18n="dashboard.patient_info">Patient Information</h5>
               <div class="info-grid">
                 <div class="info-item">
-                  <label>Patient Name:</label>
+                  <label data-i18n="dashboard.patient_name">Patient Name:</label>
                   <span id="patientName"></span>
                 </div>
                 <div class="info-item">
-                  <label>Date:</label>
+                  <label data-i18n="dashboard.date">Date:</label>
                   <span id="prescriptionDate"></span>
                 </div>
                 <div class="info-item">
-                  <label>Prescriber:</label>
+                  <label data-i18n="dashboard.prescriber">Prescriber:</label>
                   <span id="prescriber"></span>
                 </div>
               </div>
@@ -94,17 +92,17 @@
 
             <!-- Medicines Table -->
             <div class="medicines-section">
-              <h5>Prescribed Medicines</h5>
+              <h5 data-i18n="dashboard.medicines">Prescribed Medicines</h5>
               <div class="table-responsive">
                 <table class="table table-bordered table-hover">
                   <thead class="thead-light">
                     <tr>
-                      <th>Medicine Name</th>
-                      <th>Dosage</th>
-                      <th>Purpose</th>
-                      <th>Instructions</th>
-                      <th>Warnings</th>
-                      <th>Status</th>
+                      <th data-i18n="dashboard.table.medicine_name">Medicine Name</th>
+                      <th data-i18n="dashboard.table.dosage">Dosage</th>
+                      <th data-i18n="dashboard.table.purpose">Purpose</th>
+                      <th data-i18n="dashboard.table.instructions">Instructions</th>
+                      <th data-i18n="dashboard.table.warnings">Warnings</th>
+                      <th data-i18n="dashboard.table.status">Status</th>
                     </tr>
                   </thead>
                   <tbody id="medicinesTableBody">
@@ -116,18 +114,18 @@
 
             <!-- Additional Info -->
             <div class="additional-info mt-4">
-              <h5>Additional Information</h5>
+              <h5 data-i18n="dashboard.additional_info">Additional Information</h5>
               <div class="info-grid">
                 <div class="info-item">
-                  <label>Manufacturer:</label>
+                  <label data-i18n="dashboard.manufacturer">Manufacturer:</label>
                   <span id="manufacturer"></span>
                 </div>
                 <div class="info-item">
-                  <label>Lot Number:</label>
+                  <label data-i18n="dashboard.lot">Lot Number:</label>
                   <span id="lotNumber"></span>
                 </div>
                 <div class="info-item">
-                  <label>Expiration Date:</label>
+                  <label data-i18n="dashboard.expiry">Expiration Date:</label>
                   <span id="expirationDate"></span>
                 </div>
               </div>
@@ -139,7 +137,7 @@
       <!-- Previous Analyses -->
       <div class="card shadow" style="margin-top: 50px;">
         <div class="card-header py-3">
-          <h3 class="m-0 font-weight-bold">Previous Analyses</h3>
+          <h3 class="m-0 font-weight-bold" data-i18n="dashboard.previous">Previous Analyses</h3>
         </div>
         <div class="card-body text-center">
           {{if .Prescriptions}}
@@ -147,8 +145,8 @@
               <table class="table table-bordered table-hover">
                 <thead>
                   <tr>
-                    <th>Date</th>
-                    <th>Analysis</th>
+                    <th data-i18n="dashboard.date">Date</th>
+                    <th data-i18n="dashboard.analysis_modal_title">Prescription Analysis</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
@@ -158,15 +156,15 @@
                     <td>{{.UploadDate.Format "Jan 02, 2006 15:04"}}</td>
                     <td>
                       <button class="btn btn-info btn-sm" onclick="showAnalysis('{{.ID.Hex}}')">
-                        View Analysis
+                        <span data-i18n="dashboard.view_analysis">View Analysis</span>
                       </button>
                     </td>
                     <td>
                       <button class="btn btn-primary btn-sm" onclick="downloadAnalysis('{{.ID.Hex}}')">
-                        <i class="fas fa-download"></i> Download
+                        <i class="fas fa-download"></i> <span data-i18n="dashboard.download">Download</span>
                       </button>
                       <button class="btn btn-danger btn-sm" onclick="deletePrescription(event, '{{.ID.Hex}}')">
-                        <i class="fas fa-trash"></i> Delete
+                        <i class="fas fa-trash"></i> <span data-i18n="dashboard.delete">Delete</span>
                       </button>
                     </td>
                   </tr>
@@ -175,7 +173,7 @@
               </table>
             </div>
           {{else}}
-            <p class="text-center">No prescriptions analyzed yet. Upload one to get started!</p>
+            <p class="text-center" data-i18n="dashboard.none_yet">No prescriptions analyzed yet. Upload one to get started!</p>
           {{end}}
         </div>
       </div>
@@ -186,7 +184,7 @@
   <div class="modal" id="analysisModal" style="display: none;">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Prescription Analysis</h2>
+      <h2 data-i18n="dashboard.analysis_modal_title">Prescription Analysis</h2>
       <div id="analysisContent"></div>
     </div>
   </div>
@@ -245,8 +243,8 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-logo">
-          <h2><i class="fas fa-heartbeat"></i> MediMate</h2>
-          <p>Quick and efficient doctor appointments at your fingertips</p>
+          <h2><i class="fas fa-heartbeat"></i> Cura</h2>
+          <p></p>
           <div class="social-links">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
@@ -255,39 +253,40 @@
           </div>
         </div>
         <div class="footer-links">
-          <h3>Quick Links</h3>
+          <h3 data-i18n="home.quick_links">Quick Links</h3>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/#about">About Us</a></li>
-            <li><a href="/#contact">Contact</a></li>
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/dashboard" data-i18n="nav.dashboard">Dashboard</a></li>
+            <li><a href="/#about" data-i18n="nav.about_us">About Us</a></li>
+            <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-links">
-          <h3>Services</h3>
+          <h3 data-i18n="home.services">Services</h3>
           <ul>
-            <li><a href="#">Prescription Analysis</a></li>
-            <li><a href="#">Medicine Information</a></li>
-            <li><a href="#">Dosage Validation</a></li>
-            <li><a href="#">Side Effects</a></li>
-            <li><a href="#">Dietary Recommendations</a></li>
+            <li><a href="#" data-i18n="home.service.prescription_analysis">Prescription Analysis</a></li>
+            <li><a href="#" data-i18n="home.service.medicine_info">Medicine Information</a></li>
+            <li><a href="#" data-i18n="home.service.dosage_validation">Dosage Validation</a></li>
+            <li><a href="#" data-i18n="home.service.side_effects">Side Effects</a></li>
+            <li><a href="#" data-i18n="home.service.diet_reco">Dietary Recommendations</a></li>
           </ul>
         </div>
         <div class="footer-newsletter">
-          <h3>Newsletter</h3>
-          <p>Subscribe to our newsletter for health tips and updates</p>
+          <h3 data-i18n="home.newsletter">Newsletter</h3>
+          <p data-i18n="home.newsletter_desc">Subscribe to our newsletter for health tips and updates</p>
           <form id="newsletterForm">
-            <input type="email" placeholder="Your Email" required>
-            <button type="submit" class="btn btn-primary">Subscribe</button>
+            <input type="email" required data-i18n-attr="placeholder:home.contact_email_ph">
+            <button type="submit" class="btn btn-primary" data-i18n="home.subscribe">Subscribe</button>
           </form>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 MediMate. All rights reserved. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</p>
+        <p>&copy; 2025 Cura. <span data-i18n="home.footer_rights">All rights reserved. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</span></p>
       </div>
     </div>
   </footer>
 
+  <script src="/static/js/i18n.js"></script>
   <script src="/static/js/main.js"></script>
   <script>
     // File upload preview

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediMate - Smart Prescription Analysis</title>
+  <title data-i18n="app.name">Cura</title>
   <link rel="stylesheet" href="static/css/style.css">
   <link rel="stylesheet" href="static/css/responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,24 +13,24 @@
   <nav class="navbar">
     <div class="container">
       <div class="logo">
-        <h1><i class="fas fa-heartbeat pulse"></i> MediMate</h1>
+        <h1><i class="fas fa-heartbeat pulse"></i> Cura</h1>
       </div>
       <div class="nav-links" id="navLinks">
         <i class="fas fa-times" id="closeMenu"></i>
         <ul>
-          <li><a href="/#home" class="active">Home</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#contact">Contact</a></li>
+          <li><a href="/#home" class="active" data-i18n="nav.home">Home</a></li>
+          <li><a href="/dashboard" data-i18n="nav.dashboard">Dashboard</a></li>
+          <li><a href="/#about" data-i18n="nav.about">About</a></li>
+          <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
       </div>
       <div class="auth-buttons">
         {{if .User}}
-          <span class="user-info">Logged in as: {{.User}} ({{.Role}})</span>
-          <a href="/logout" class="btn btn-secondary">Logout</a>
+          <span class="user-info"><span data-i18n="nav.logged_in_as">Logged in as:</span> {{.User}} ({{.Role}})</span>
+          <a href="/logout" class="btn btn-secondary" data-i18n="nav.logout">Logout</a>
         {{else}}
-          <a href="/login" class="btn btn-primary">Login</a>
-          <a href="/register" class="btn btn-primary">Sign Up</a>
+          <a href="/login" class="btn btn-primary" data-i18n="nav.login">Login</a>
+          <a href="/register" class="btn btn-primary" data-i18n="nav.signup">Sign Up</a>
         {{end}}
       </div>
       <i class="fas fa-bars" id="menuIcon"></i>
@@ -41,11 +41,11 @@
   <section class="hero" id="home">
     <div class="container">
       <div class="hero-content">
-        <h1>Understand Your Prescriptions with <span class="highlight">AI</span></h1>
-        <p>Upload your prescription and get instant analysis of medicines, dosages, and potential interactions. We help you understand your medications better and ensure safe usage.</p>
+        <h1 data-i18n="home.hero_title">Understand Your Prescriptions with AI</h1>
+        <p data-i18n="home.hero_desc">Upload your prescription and get instant analysis of medicines, dosages, and potential interactions. We help you understand your medications better and ensure safe usage.</p>
         <div class="hero-buttons">
-          <a href="/dashboard" class="btn btn-large btn-primary" id="uploadBtn">Upload Prescription</a>
-          <button class="btn btn-large btn-secondary" id="learnMoreBtn">Learn More</button>
+          <a href="/dashboard" class="btn btn-large btn-primary" id="uploadBtn" data-i18n="home.upload_btn">Upload Prescription</a>
+          <button class="btn btn-large btn-secondary" id="learnMoreBtn" data-i18n="home.learn_more">Learn More</button>
         </div>
       </div>
       <div class="hero-image">
@@ -53,15 +53,15 @@
         <div class="stats-card">
           <div class="stat">
             <h3>100%</h3>
-            <p>Accurate</p>
+            <p data-i18n="home.stats.accurate">Accurate</p>
           </div>
           <div class="stat">
             <h3>24/7</h3>
-            <p>Support</p>
+            <p data-i18n="home.stats.support">Support</p>
           </div>
           <div class="stat">
             <h3>Safe</h3>
-            <p>Analysis</p>
+            <p data-i18n="home.stats.analysis">Analysis</p>
           </div>
         </div>
       </div>
@@ -72,51 +72,51 @@
   <section class="services" id="services">
     <div class="container">
       <div class="section-header">
-        <h2>Our Services</h2>
-        <p>We help you understand your prescriptions better and ensure safe medication usage</p>
+        <h2 data-i18n="home.services_title">Our Services</h2>
+        <p data-i18n="home.services_desc">We help you understand your prescriptions better and ensure safe medication usage</p>
       </div>
       <div class="services-grid">
         <div class="service-card">
           <div class="service-icon">
             <i class="fas fa-prescription-bottle-alt"></i>
           </div>
-          <h3>Prescription Analysis</h3>
-          <p>Detailed analysis of your prescription, including medicine names and dosages.</p>
+          <h3 data-i18n="home.service.prescription_analysis">Prescription Analysis</h3>
+          <p></p>
         </div>
         <div class="service-card">
           <div class="service-icon">
             <i class="fas fa-notes-medical"></i>
           </div>
-          <h3>Medicine Information</h3>
-          <p>Comprehensive insights into each medicine's purpose, usage, and warnings.</p>
+          <h3 data-i18n="home.service.medicine_info">Medicine Information</h3>
+          <p></p>
         </div>
         <div class="service-card">
           <div class="service-icon">
             <i class="fas fa-ruler-combined"></i>
           </div>
-          <h3>Dosage Validation</h3>
-          <p>Verify prescribed dosages are within safe limits, preventing errors and ensuring safety.</p>
+          <h3 data-i18n="home.service.dosage_validation">Dosage Validation</h3>
+          <p></p>
         </div>
         <div class="service-card">
           <div class="service-icon">
             <i class="fas fa-bell"></i>
           </div>
-          <h3>Side Effects & Warnings</h3>
-          <p>Information on potential side effects, drug interactions, and important warnings.</p>
+          <h3 data-i18n="home.service.side_effects">Side Effects & Warnings</h3>
+          <p></p>
         </div>
         <div class="service-card">
           <div class="service-icon">
             <i class="fas fa-utensils"></i>
           </div>
-          <h3>Dietary Recommendations</h3>
-          <p>Personalized dietary advice based on your medications and health needs.</p>
+          <h3 data-i18n="home.service.diet_reco">Dietary Recommendations</h3>
+          <p></p>
         </div>
         <div class="service-card">
           <div class="service-icon">
             <i class="fas fa-calendar-alt"></i>
           </div>
-          <h3>Medication Reminders</h3>
-          <p>Set up customizable reminders to help you take your medications on time.</p>
+          <h3 data-i18n="home.service.reminders">Medication Reminders</h3>
+          <p></p>
         </div>
       </div>
     </div>
@@ -126,29 +126,29 @@
   <section class="how-it-works">
     <div class="container">
       <div class="section-header">
-        <h2>How MediMate Works</h2>
-        <p>Get your prescription analyzed in 3 simple steps</p>
+        <h2 data-i18n="home.how_title">How Cura Works</h2>
+        <p data-i18n="home.how_desc">Get your prescription analyzed in 3 simple steps</p>
       </div>
       <div class="steps">
         <div class="step">
           <div class="step-number"><i class="fas fa-upload"></i></div>
           <div class="step-content">
-            <h3>Upload Prescription</h3>
-            <p>Take a clear photo of your prescription and upload it</p>
+            <h3 data-i18n="home.how_upload">Upload Prescription</h3>
+            <p data-i18n="home.how_upload_desc">Take a clear photo of your prescription and upload it</p>
           </div>
         </div>
         <div class="step">
           <div class="step-number"><i class="fas fa-brain"></i></div>
           <div class="step-content">
-            <h3>AI Analysis</h3>
-            <p>Our AI analyzes the prescription and extracts key information</p>
+            <h3 data-i18n="home.how_ai">AI Analysis</h3>
+            <p data-i18n="home.how_ai_desc">Our AI analyzes the prescription and extracts key information</p>
           </div>
         </div>
         <div class="step">
           <div class="step-number"><i class="fas fa-clipboard-check"></i></div>
           <div class="step-content">
-            <h3>Get Results</h3>
-            <p>View detailed analysis with medicine info and safety checks</p>
+            <h3 data-i18n="home.how_results">Get Results</h3>
+            <p data-i18n="home.how_results_desc">View detailed analysis with medicine info and safety checks</p>
           </div>
         </div>
       </div>
@@ -162,30 +162,30 @@
   <section class="features" id="about">
     <div class="container">
       <div class="section-header">
-        <h2>Why Choose MediMate?</h2>
-        <p>Your prescription safety companion</p>
+        <h2 data-i18n="home.why_title">Why Choose Cura?</h2>
+        <p data-i18n="home.why_desc">Your prescription safety companion</p>
       </div>
       <div class="features-content">
         <div class="features-grid">
           <div class="feature">
             <i class="fas fa-lock"></i>
-            <h3>Secure & Private</h3>
-            <p>Your prescriptions and medical data are encrypted and handled with utmost privacy.</p>
+            <h3 data-i18n="home.feature_secure">Secure & Private</h3>
+            <p data-i18n="home.feature_secure_desc">Your prescriptions and medical data are encrypted and handled with utmost privacy.</p>
           </div>
           <div class="feature">
             <i class="fas fa-robot"></i>
-            <h3>Advanced AI</h3>
-            <p>Leverage cutting-edge AI for precise and comprehensive prescription analysis.</p>
+            <h3 data-i18n="home.feature_ai">Advanced AI</h3>
+            <p data-i18n="home.feature_ai_desc">Leverage cutting-edge AI for precise and comprehensive prescription analysis.</p>
           </div>
           <div class="feature">
             <i class="fas fa-hourglass-half"></i>
-            <h3>Blazing Fast</h3>
-            <p>Get instant analysis results within seconds, saving your valuable time.</p>
+            <h3 data-i18n="home.feature_fast">Blazing Fast</h3>
+            <p data-i18n="home.feature_fast_desc">Get instant analysis results within seconds, saving your valuable time.</p>
           </div>
           <div class="feature">
             <i class="fas fa-headset"></i>
-            <h3>24/7 Support</h3>
-            <p>Our dedicated support team is always ready to assist you around the clock.</p>
+            <h3 data-i18n="home.feature_support">24/7 Support</h3>
+            <p data-i18n="home.feature_support_desc">Our dedicated support team is always ready to assist you around the clock.</p>
           </div>
         </div>
         <div class="features-image">
@@ -193,7 +193,7 @@
         </div>
       </div>
       <div class="features-cta">
-        <a href="/dashboard" class="btn btn-large btn-primary">Get Started Today</a>
+        <a href="/dashboard" class="btn btn-large btn-primary" data-i18n="home.cta_get_started">Get Started Today</a>
       </div>
     </div>
   </section>
@@ -202,40 +202,40 @@
   <section class="contact" id="contact">
     <div class="container">
       <div class="section-header">
-        <h2>Contact Us</h2>
-        <p>Have questions? We're here to help</p>
+        <h2 data-i18n="home.contact_title">Contact Us</h2>
+        <p data-i18n="home.contact_desc">Have questions? We're here to help</p>
       </div>
       <div class="contact-content">
         <div class="contact-info">
           <div class="contact-item">
             <i class="fas fa-envelope"></i>
-            <h3>Email</h3>
-            <p>support@medimate.com</p>
+            <h3 data-i18n="home.contact_email">Email</h3>
+            <p>support@Cura.com</p>
           </div>
           <div class="contact-item">
             <i class="fas fa-phone"></i>
-            <h3>Phone</h3>
+            <h3 data-i18n="home.contact_phone">Phone</h3>
             <p>+1 (555) 123-4567</p>
           </div>
           <div class="contact-item">
             <i class="fas fa-map-marker-alt"></i>
-            <h3>Address</h3>
+            <h3 data-i18n="home.contact_address">Address</h3>
             <p>Delhi, India</p>
           </div>
         </div>
         <div class="contact-form">
-          <h3>Send Us a Message</h3>
+          <h3 data-i18n="home.contact_form_title">Send Us a Message</h3>
           <form>
             <div class="form-group">
-              <input type="text" placeholder="Your Name" required>
+              <input type="text" required data-i18n-attr="placeholder:home.contact_name_ph">
             </div>
             <div class="form-group">
-              <input type="email" placeholder="Your Email" required>
+              <input type="email" required data-i18n-attr="placeholder:home.contact_email_ph">
             </div>
             <div class="form-group">
-              <textarea placeholder="Your Message" rows="5" required></textarea>
+              <textarea rows="5" required data-i18n-attr="placeholder:home.contact_message_ph"></textarea>
             </div>
-            <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+            <button type="submit" class="btn btn-primary btn-full" data-i18n="home.contact_send">Send Message</button>
           </form>
         </div>
       </div>
@@ -250,8 +250,8 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-logo">
-          <h2><i class="fas fa-heartbeat"></i> MediMate</h2>
-          <p>Quick and efficient doctor appointments at your fingertips</p>
+          <h2><i class="fas fa-heartbeat"></i> Cura</h2>
+          <p></p>
           <div class="social-links">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
@@ -260,39 +260,40 @@
           </div>
         </div>
         <div class="footer-links">
-          <h3>Quick Links</h3>
+          <h3 data-i18n="home.quick_links">Quick Links</h3>
           <ul>
-            <li><a href="/#home">Home</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/#about">About Us</a></li>
-            <li><a href="/#contact">Contact</a></li>
+            <li><a href="/#home" data-i18n="nav.home">Home</a></li>
+            <li><a href="/dashboard" data-i18n="nav.dashboard">Dashboard</a></li>
+            <li><a href="/#about" data-i18n="nav.about_us">About Us</a></li>
+            <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-links">
-          <h3>Services</h3>
+          <h3 data-i18n="home.services">Services</h3>
           <ul>
-            <li><a href="#">Prescription Analysis</a></li>
-            <li><a href="#">Medicine Information</a></li>
-            <li><a href="#">Dosage Validation</a></li>
-            <li><a href="#">Side Effects</a></li>
-            <li><a href="#">Dietary Recommendations</a></li>
+            <li><a href="#" data-i18n="home.service.prescription_analysis">Prescription Analysis</a></li>
+            <li><a href="#" data-i18n="home.service.medicine_info">Medicine Information</a></li>
+            <li><a href="#" data-i18n="home.service.dosage_validation">Dosage Validation</a></li>
+            <li><a href="#" data-i18n="home.service.side_effects">Side Effects</a></li>
+            <li><a href="#" data-i18n="home.service.diet_reco">Dietary Recommendations</a></li>
           </ul>
         </div>
         <div class="footer-newsletter">
-          <h3>Newsletter</h3>
-          <p>Subscribe to our newsletter for health tips and updates</p>
+          <h3 data-i18n="home.newsletter">Newsletter</h3>
+          <p data-i18n="home.newsletter_desc">Subscribe to our newsletter for health tips and updates</p>
           <form id="newsletterForm">
-            <input type="email" placeholder="Your Email" required>
-            <button type="submit" class="btn btn-primary">Subscribe</button>
+            <input type="email" required data-i18n-attr="placeholder:home.contact_email_ph">
+            <button type="submit" class="btn btn-primary" data-i18n="home.subscribe">Subscribe</button>
           </form>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 MediMate. All rights reserved. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</p>
+        <p>&copy; 2025 Cura. <span data-i18n="home.footer_rights">All rights reserved. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</span></p>
       </div>
     </div>
   </footer>
 
+  <script src="static/js/i18n.js"></script>
   <script src="static/js/main.js"></script>
 </body>
 </html>

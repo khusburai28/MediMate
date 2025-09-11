@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MediMate - Login</title>
+  <title data-i18n="app.name">Cura</title>
   <link rel="stylesheet" href="/static/css/style.css">
   <link rel="stylesheet" href="/static/css/responsive.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -258,20 +258,20 @@
   <nav class="navbar">
     <div class="container">
       <div class="logo">
-        <h1><i class="fas fa-heartbeat pulse"></i> MediMate</h1>
+        <h1><i class="fas fa-heartbeat pulse"></i> Cura</h1>
       </div>
       <div class="nav-links" id="navLinks">
         <i class="fas fa-times" id="closeMenu"></i>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/dashboard">Dashboard</a></li>
-          <li><a href="/#about">About</a></li>
-          <li><a href="/#contact">Contact</a></li>
+          <li><a href="/" data-i18n="nav.home">Home</a></li>
+          <li><a href="/dashboard" data-i18n="nav.dashboard">Dashboard</a></li>
+          <li><a href="/#about" data-i18n="nav.about">About</a></li>
+          <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
         </ul>
       </div>
       <div class="auth-buttons">
-        <a href="/login" class="btn btn-primary active">Login</a>
-        <a href="/register" class="btn btn-primary">Sign Up</a>
+        <a href="/login" class="btn btn-primary active" data-i18n="nav.login">Login</a>
+        <a href="/register" class="btn btn-primary" data-i18n="nav.signup">Sign Up</a>
       </div>
       <i class="fas fa-bars" id="menuIcon"></i>
     </div>
@@ -280,20 +280,20 @@
   <!-- Login Form -->
   <section class="form-section">
     <div class="container form-container">
-      <h2>Welcome Back to MediMate</h2>
-      <p class="form-description">Log in to analyze your prescriptions and access your medical history</p>
+      <h2 data-i18n="login.title">Welcome Back to Cura</h2>
+      <p class="form-description" data-i18n="login.desc">Log in to analyze your prescriptions and access your medical history</p>
       <form action="/login" method="post" class="login-form">
         <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+          <label for="username" data-i18n="login.username">Username</label>
+          <input type="text" id="username" name="username" required data-i18n-attr="placeholder:login.username_ph">
         </div>
         <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          <label for="password" data-i18n="login.password">Password</label>
+          <input type="password" id="password" name="password" required data-i18n-attr="placeholder:login.password_ph">
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Login</button>
+        <button type="submit" class="btn btn-primary btn-full" data-i18n="login.submit">Login</button>
       </form>
-      <p class="redirect-text">Don't have an account? <a href="/register">Sign up</a></p>
+      <p class="redirect-text"><span data-i18n="login.no_account">Don't have an account?</span> <a href="/register" data-i18n="login.signup_link">Sign up</a></p>
     </div>
   </section>
 
@@ -302,8 +302,8 @@
     <div class="container">
       <div class="footer-top">
         <div class="footer-logo">
-          <h2><i class="fas fa-heartbeat"></i> MediMate</h2>
-          <p>Quick and efficient doctor appointments at your fingertips</p>
+          <h2><i class="fas fa-heartbeat"></i> Cura</h2>
+          <p></p>
           <div class="social-links">
             <a href="#"><i class="fab fa-facebook-f"></i></a>
             <a href="#"><i class="fab fa-twitter"></i></a>
@@ -312,39 +312,40 @@
           </div>
         </div>
         <div class="footer-links">
-          <h3>Quick Links</h3>
+          <h3 data-i18n="home.quick_links">Quick Links</h3>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/dashboard">Dashboard</a></li>
-            <li><a href="/#about">About Us</a></li>
-            <li><a href="/#contact">Contact</a></li>
+            <li><a href="/" data-i18n="nav.home">Home</a></li>
+            <li><a href="/dashboard" data-i18n="nav.dashboard">Dashboard</a></li>
+            <li><a href="/#about" data-i18n="nav.about_us">About Us</a></li>
+            <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
           </ul>
         </div>
         <div class="footer-links">
-          <h3>Services</h3>
+          <h3 data-i18n="home.services">Services</h3>
           <ul>
-            <li><a href="#">Prescription Analysis</a></li>
-            <li><a href="#">Medicine Information</a></li>
-            <li><a href="#">Dosage Validation</a></li>
-            <li><a href="#">Side Effects</a></li>
-            <li><a href="#">Dietary Recommendations</a></li>
+            <li><a href="#" data-i18n="home.service.prescription_analysis">Prescription Analysis</a></li>
+            <li><a href="#" data-i18n="home.service.medicine_info">Medicine Information</a></li>
+            <li><a href="#" data-i18n="home.service.dosage_validation">Dosage Validation</a></li>
+            <li><a href="#" data-i18n="home.service.side_effects">Side Effects</a></li>
+            <li><a href="#" data-i18n="home.service.diet_reco">Dietary Recommendations</a></li>
           </ul>
         </div>
         <div class="footer-newsletter">
-          <h3>Newsletter</h3>
-          <p>Subscribe to our newsletter for health tips and updates</p>
+          <h3 data-i18n="home.newsletter">Newsletter</h3>
+          <p data-i18n="home.newsletter_desc">Subscribe to our newsletter for health tips and updates</p>
           <form id="newsletterForm">
-            <input type="email" placeholder="Your Email" required>
-            <button type="submit" class="btn btn-primary">Subscribe</button>
+            <input type="email" required data-i18n-attr="placeholder:home.contact_email_ph">
+            <button type="submit" class="btn btn-primary" data-i18n="home.subscribe">Subscribe</button>
           </form>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2025 MediMate. All rights reserved. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</p>
+        <p>&copy; 2025 Cura. <span data-i18n="home.footer_rights">All rights reserved. Made with ❤️ by Team Malaai (Khusbu Rai & Pushpender Singh).</span></p>
       </div>
     </div>
   </footer>
 
+  <script src="/static/js/i18n.js"></script>
   <script src="/static/js/main.js"></script>
 </body>
 </html>
