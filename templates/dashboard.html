@@ -843,6 +843,24 @@
       padding-top: 10px;
     }
 
+    /* Strong borders and clear column separation for prescription table */
+    .table.table-bordered {
+      border: 1px solid #e3e6f0;
+    }
+
+    .table.table-bordered th,
+    .table.table-bordered td {
+      border: 1px solid #e3e6f0;
+      vertical-align: top;
+    }
+
+    /* Improve readability for long content */
+    .table thead th,
+    .table tbody td {
+      word-wrap: break-word;
+      white-space: normal;
+    }
+
     .table {
       width: 100%;
       margin-bottom: 0;
