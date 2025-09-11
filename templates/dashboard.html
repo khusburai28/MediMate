@@ -58,6 +58,14 @@
               <input type="file" id="prescription" name="prescription" accept="image/*" required style="display: none;">
               <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('prescription').click()" data-i18n="dashboard.choose_file">Choose File</button>
             </div>
+            <div style="margin-top: 16px; max-width: 320px;">
+              <label for="lang" style="display:block; margin-bottom:6px; font-weight:600;">Output language</label>
+              <select id="lang" name="lang" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px;">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+              </select>
+            </div>
             <div id="filePreview" style="display: none; margin-top: 20px;">
               <img id="previewImage" src="" alt="Preview" style="max-width: 300px; margin-bottom: 10px;">
               <p id="fileName"></p>

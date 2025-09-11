@@ -183,6 +183,18 @@ func analyzePrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Read and validate requested language (defaults to English)
+	langCode := r.FormValue("lang")
+	var language string
+	switch langCode {
+	case "hi":
+		language = "Hindi"
+	case "pa":
+		language = "Punjabi"
+	default:
+		language = "English"
+	}
+
 	file, _, err := r.FormFile("prescription")
 	if err != nil {
 		http.Error(w, "Error uploading file", http.StatusBadRequest)
@@ -228,7 +240,9 @@ func analyzePrescriptionHandler(w http.ResponseWriter, r *http.Request) {
 		"manufacturer": "...",
 		"lot_number": "...",
 		"expiration_date": "..."
-	}`
+	}
+
+	Important language instruction: Respond in ` + language + `. Keep all JSON keys in English, but translate all values and free-text fields into ` + language + `. Do NOT include markdown code fences; return only raw JSON.`
 
 	analysis, err := askGemini(prompt, file)
 	if err != nil {
