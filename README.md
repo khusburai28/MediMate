@@ -1,4 +1,4 @@
-# Cura - Smart Prescription Analysis
+# Cura - Medical Healthcare in Rural Areas.
 
 Cura is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
 
