@@ -72,7 +72,6 @@ Google App Engine provides a robust and managed environment for Cura:
 - **Backend**
   - Go (Golang) for server implementation
   - MongoDB for data storage
-  - Google's Gemini AI for prescription analysis
 
 - **Frontend**
   - HTML5, CSS3, JavaScript
@@ -83,7 +82,6 @@ Google App Engine provides a robust and managed environment for Cura:
 
 - Go 1.16 or higher
 - MongoDB 4.4 or higher
-- Google Cloud API credentials (for Gemini AI)
 
 ## Installation
 
