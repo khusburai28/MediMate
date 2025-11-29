@@ -1,6 +1,6 @@
-# Cura - Medical Healthcare in Rural Areas.
+# MediMate - Medical Healthcare in Rural Areas.
 
-Cura is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
+MediMate is an AI-powered prescription analysis tool that helps users understand their medical prescriptions better. It uses advanced AI technology to extract and analyze information from prescription images, providing detailed insights about medicines, dosages, and potential interactions.
 
 ## YouTube Demonstration
 
@@ -87,8 +87,8 @@ Google App Engine provides a robust and managed environment for Cura:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/khusburai28/Cura.git
-   cd Cura
+   git clone https://github.com/khusburai28/MediMate.git
+   cd MediMate
    ```
 
 2. Install dependencies:
@@ -137,7 +137,7 @@ SESSION_SECRET=your_session_secret
 
 ```
 # Navigate to folder
-cd Cura
+cd MediMate
 
 # CLI Login
 gcloud auth login
